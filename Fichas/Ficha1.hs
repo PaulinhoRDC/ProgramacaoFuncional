@@ -1,5 +1,7 @@
 module Ficha1 where
 
+import Data.Char  --Para a (8)
+
 {-
 1. Usando as seguintes funções pré-definidas do Haskell:
     • length l: o número de elementos da lista l
@@ -201,5 +203,148 @@ safe sem1 sem2
 
 
   {-
-  6. 
+  6. Um ponto num plano pode ser representado por um sistema de coordenadas
+  Cartesiano (distâncias aos eixos vertical e horizontal) ou por um sistema de coordenadas
+  Polar (distância à origem e ângulo do respectivo vector com o eixo horizontal).
+          data Ponto = Cartesiano Double Double | Polar Double Double
+                      deriving (Show,Eq)
+  Com este tipo o ponto Cartesiano (-1) 0 pode alternativamente ser representado por Polar 1 pi.
   -}
+
+-- a) posx :: Ponto -> Double que calcula a distância de um ponto ao eixo vertical.
+
+data Ponto = Cartesiano Double Double | Polar Double Double deriving (Show,Eq)
+
+posx :: Ponto -> Double
+posx (Cartesiano x y) = x
+posx (Polar d a) = d * (cos a)
+
+
+-- b) posy :: Ponto -> Double que calcula a distância de um ponto ao eixo horizontal.
+
+posy :: Ponto -> Double
+posy (Cartesiano x y) = y
+posy (Polar d a) = d * (sin a)
+
+-- c) raio :: Ponto -> Double que calcula a distância de um ponto à origem.
+
+raio :: Ponto -> Double
+raio (Polar d a) = d
+raio (Cartesiano x y) = sqrt (x^2 + y^2)
+
+-- d) angulo :: Ponto -> Double que calcula o ângulo entre o vector que liga a origem ao ponto e o eixo horizontal.
+
+angulo :: Ponto -> Double
+angulo (Polar d a) = a
+angulo (Cartesiano x y) = atan (x/y)
+
+-- e) dist :: Ponto -> Ponto -> Double que calcula a distˆancia entre dois pontos.
+
+distpontos :: Ponto -> Ponto -> Double
+distpontos p1 p2 = sqrt ((posx p1 - posx p2)^2 + (posy p1 - posy p2)^2)
+
+{-
+7. Considere o seguinte tipo de dados para representar figuras geométricas num plano.
+
+  data Figura = Circulo Ponto Double
+              | Rectangulo Ponto Ponto
+              | Triangulo Ponto Ponto Ponto
+                deriving (Show,Eq)
+
+O tipo de dados diz que uma figura pode ser um círculo centrado num determinado ponto
+e com um determinado raio, um rectângulo paralelo aos eixos representado por dois pontos
+que são vértices da sua diagonal, ou um triângulo representado pelos três pontos dos seus vértices.
+-}
+
+data Figura = Circulo Ponto Double
+            | Rectangulo Ponto Ponto
+            | Triangulo Ponto Ponto Ponto
+              deriving (Show,Eq)
+
+-- a) Defina a função poligono :: Figura -> Bool que testa se uma figura é um polígono.
+
+poligono :: Figura -> Bool
+poligono (Circulo p r) = if r<=0 then False else True
+poligono (Rectangulo p1 p2) = if (posx p1 == posx p2 || posy p1 == posy p2) then False else True
+poligono (Triangulo p1 p2 p3) = (a < b + c && b < a + c && c < a + b)
+                                  where a = distpontos p1 p2
+                                        b = distpontos p2 p3
+                                        c = distpontos p1 p3
+
+-- b) Defina a função vertices :: Figura -> [Ponto] que calcula a lista dos vértices de uma figura.
+
+vertices :: Figura -> [Ponto]
+vertices (Circulo _ _) = []
+vertices (Rectangulo p1 p2) = [p1, (Cartesiano (posx p2) (posy p1)), p2, (Cartesiano (posx p1) (posy p2))]
+vertices (Triangulo p1 p2 p3) = [p1,p2,p3]
+
+-- VER MELHOR ESTA ------- PERGUNTAR PROFFFFFFFFFFFFFF
+
+-- c) Complete a seguinte definição cujo objectivo é calcular a área de uma figura:
+
+area :: Figura -> Double
+area (Triangulo p1 p2 p3) =
+    let a = distpontos p1 p2
+        b = distpontos p2 p3
+        c = distpontos p3 p1
+        s = (a+b+c) / 2 -- semi-perimetro
+    in sqrt (s*(s-a)*(s-b)*(s-c)) -- fórmula de Heron
+area (Circulo _ r) = pi * (r ^ 2)
+area (Rectangulo p1 p2) = abs (posx p2 - posx p1) * abs (posy p2 - posy p1)
+
+-- d) Defina a função perimetro :: Figura -> Double que calcula o perímetro de uma figura.
+
+perimetro2 :: Figura -> Double
+perimetro2 (Circulo p r) = 2*pi*r
+perimetro2 (Rectangulo p1 p2) = 2*(abs ((posx p2) - (posx p1))) + 2*(abs ((posy p2) - (posy p1)))
+perimetro2 (Triangulo p1 p2 p3) = (distpontos p1 p2) + (distpontos p2 p3) + (distpontos p1 p3)
+
+{-
+8. Utilizando as funções ord :: Char -> Int e chr :: Int -> Char do módulo Data.Char, defina as seguintes funções:
+
+(a) isLower :: Char -> Bool, que testa se um Char é uma minúscula.
+(b) isDigit :: Char -> Bool, que testa se um Char é um dígito.
+(c) isAlpha :: Char -> Bool, que testa se um Char é uma letra.
+(d) toUpper :: Char -> Char, que converte uma letra para a respectiva maiúscula.
+(e) intToDigit :: Int -> Char, que converte um número entre 0 e 9 para o respectivo dígito.
+(f) digitToInt :: Char -> Int, que converte um dígito para o respectivo inteiro.
+
+Note que todas estas funções já estão também pré-definidas nesse módulo.
+-}
+
+-- a)
+
+myIsLower :: Char -> Bool
+myIsLower c = (ord c >= ord 'a' && ord c <= ord 'z')
+
+-- b)
+
+myIsDigit :: Char -> Bool
+myIsDigit c = (ord c >= ord '0' && ord c <= ord '9')
+
+-- c)
+
+myIsAlpha :: Char -> Bool
+myIsAlpha c = (myIsLower c || myIsUpper c)
+  where myIsUpper c = (ord c >= ord 'A' && ord c <= ord 'Z')
+
+-- d)
+
+myToUpper :: Char -> Char
+myToUpper c
+ | myIsLower c = chr ((ord c) - 32)  -- 32 é o resultado de ( ord 'a' - ord 'A' )
+ | otherwise = c
+
+-- e)
+
+myIntToDigit :: Int -> Char
+myIntToDigit i
+ | i <= 9 = chr (i + 48)             -- 48 é o resultado de ( ord '0' - 0 )
+ | otherwise = error (show i ++ " is not a Digit")
+
+-- f)
+
+myDigitToInt :: Char -> Int
+myDigitToInt c
+ | myIsDigit c = (ord c) - 48
+ | otherwise = error (show c ++ " is not a Digit")
