@@ -190,3 +190,88 @@ Por exemplo, [(2,3), (3,4), (5,3), (4,5)] representa o polinómio 2 x^3 + 3 x4 +
 
 type Polinomio = [Monomio]
 type Monomio = (Float,Int)
+
+-- a) conta :: Int -> Polinomio -> Int de forma a que (conta n p) indica quantos monómios de grau n existem em p.
+
+conta :: Int -> Polinomio -> Int
+conta _ [] = 0
+conta n ((x,xs):t) = if (n == xs)
+  then 1 + conta n t
+  else conta n t
+
+-- b) grau :: Polinomio -> Int que indica o grau de um polinómio.
+
+grau :: Polinomio -> Int
+grau [] = 0
+grau [(n,e)] = e
+grau ((n,e):(n2,e2):t) = if e>e2
+  then grau ((n,e):t)
+  else grau ((n2,e2):t)
+
+-- c) selgrau :: Int -> Polinomio -> Polinomio que selecciona os monómios com um dado grau de um polinómio.
+
+selgrau :: Int -> Polinomio -> Polinomio
+selgrau _ [] = []
+selgrau e ((n1,e1):t)
+  |(e==e1) = (n1,e1): selgrau e t
+  |otherwise = selgrau e t
+
+-- d) deriv :: Polinomio -> Polinomio que calcula a derivada de um polinómio.
+
+deriv :: Polinomio -> Polinomio
+deriv [] = []
+deriv ((n,e):xs) = if n > 0 then (n*fromIntegral e, e-1) : deriv xs
+                            else deriv xs
+-- a função `fromIntegral` converte um valor inteiro num valor de vírgula flutuante
+-- em haskell, é necessário que ambos os fatores de uma multiplicação sejam do mesmo tipo, ele não converte automaticamente
+
+-- e) calcula :: Float -> Polinomio -> Float que calcula o valor de um polinómio para uma dado valor de x.
+
+calcula :: Float -> Polinomio -> Float
+calcula _ [] = 0
+calcula x ((n1,e1):t) = n1*(x^e1)+ calcula x t
+
+-- f) simp :: Polinomio -> Polinomio que retira de um polinómio os monómios de coeficiente zero.
+
+simp :: Polinomio -> Polinomio
+simp [] = []
+simp ((n1,e1):t) = if (n1==0)
+  then simp t
+  else (n1,e1): simp t
+
+-- g) mult :: Monomio -> Polinomio -> Polinomio que calcula o resultado da multiplicação de um monómio por um polinómio.
+
+mult :: Monomio -> Polinomio -> Polinomio
+mult _ [] = []
+mult (n,e) ((n1,e1):t) = (n*n1,e+e1) : mult (n,e) t
+
+-- h) normaliza :: Polinomio -> Polinomio que dado um polinómio constrói um polinómio
+--   equivalente em que não podem aparecer varios monómios com o mesmo grau.
+
+--normaliza :: Polinomio -> Polinomio
+--normaliza
+
+-- i) soma :: Polinomio -> Polinomio -> Polinomio que soma dois polinómios de forma a que
+-- se os polinómios que recebe estiverem normalizados produz também um polinómio normalizado.
+
+--soma :: Polinomio -> Polinomio -> Polinomio
+
+
+-- j) produto :: Polinomio -> Polinomio -> Polinomio que calcula o produto de dois polinómios
+
+--produto :: Polinomio -> Polinomio -> Polinomio
+--produto [] _ = []
+--produto ((n1,e1):t) ((n2,e2):t2) =
+
+-- k) ordena :: Polinomio -> Polinomio que ordena um polinómio por ordem crescente dos graus dos seus monómios.
+
+ordena :: Polinomio -> Polinomio
+ordena [] = []
+ordena [(b,e)] = [(b,e)]
+ordena ((n1,e1):(n2,e2):t)=if ( (e1>e2) || ((e1==e2) && (n1>=n2)) )
+  then (n2,e2) : ordena ((n1,e1):t)
+  else (n1,e1) : ordena ((n2,e2):t)
+
+-- l) equiv :: Polinomio -> Polinomio -> Bool que testa se dois polinómios são equivalentes.
+
+--equiv :: Polinomio -> Polinomio -> Bool
