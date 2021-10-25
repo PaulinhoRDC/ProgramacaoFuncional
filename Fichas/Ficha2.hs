@@ -1,3 +1,5 @@
+module Ficha1 where
+
 import  Data.Char
 
 {-
