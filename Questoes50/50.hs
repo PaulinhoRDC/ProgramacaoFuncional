@@ -316,11 +316,26 @@ ue calcula a lista de posições em que um dado elemento ocorre numa lista.
 Por exemplo, elemIndices 3 [1,2,3,4,3,2,3,4,5] corresponde a [2,4,6].
 -}
 
+elemIndices' :: Eq a => a -> [a] -> [Int]
+elemIndices' _ [] = []
+elemIndices' n l = indiceAux n l 0
+
+indiceAux :: Eq a => a -> [a] -> Int -> [Int]
+indiceAux n [] i = []
+indiceAux n (h:t) i |(n==h) = i: indiceAux n t (i+1)
+                    |otherwise = indiceAux n t (i+1)
+
 {-
 26. Apresente uma definição recursiva da função (pré-definida) nub :: Eq a => [a] -> [a]
 que calcula uma lista com os mesmos elementos da recebida, sem repetições.
 Por exemplo, nub [1,2,1,2,3,1,2] corresponde a [1,2,3].
 -}
+
+nub' :: Eq a => [a] -> [a]    -- (mantém última ocorrência)
+nub' [] = []
+nub' (h:t) = if (elem h t)
+  then nub' t
+  else h: nub' t
 
 {-
 27. Apresente uma definição recursiva da função (pré-definida) delete :: Eq a => a -> [a] -> [a]
@@ -329,11 +344,22 @@ Por exemplo, delete 2 [1,2,1,2,3,1,2] corresponde a [1,1,2,3,1,2].
 Se não existir nenhuma ocorrência a função deverá retornar a lista recebida.
 -}
 
+delete' :: Eq a => a -> [a] -> [a]
+delete' _ [] = []
+delete' n (h:t) |(n==h) = t
+                |otherwise = h: delete' n t
+
 {-
 28. Apresente uma definição recursiva da função (pré-definida) (\\) :: Eq a => [a] -> [a] -> [a]
-que retorna a lista resultante de remover (as primeiras ocorrências) dos elementos da segunda lista da primeira.
+que retorna a lista resultante de remover (as primeiras ocorrências) os elementos da segunda lista da primeira.
 Por exemplo, (\\)[1,2,3,4,5,1] [1,5] corresponde a [2,3,4,1].
 -}
+
+remPrimOcorr :: Eq a => [a] -> [a] -> [a]
+remPrimOcorr [] _ = []
+remPrimOcorr l [] = l
+remPrimOcorr (h:t) (h2:t2) | (h==h2) = remPrimOcorr t t2
+                           | otherwise = h: remPrimOcorr t (h2:t2)
 
 {-
 29. Apresente uma definição recursiva da função (pré-definida) union :: Eq a => [a] -> [a] -> [a]
@@ -341,23 +367,46 @@ que retorna a lista resultante de acrescentar à primeira lista os elementos da 
 Por exemplo, union [1,1,2,3,4] [1,5] corresponde a [1,1,2,3,4,5].
 -}
 
+union' :: Eq a => [a] -> [a] -> [a]
+union' [] l = l
+union' l [] = l
+union' l (h:t) = if (elem h l)
+  then union' l t
+  else union' (l ++ [h]) t
+
 {-
 30. Apresente uma definição recursiva da função (pré-definida) intersect :: Eq a => [a] -> [a] -> [a]
-que retorna a lista resultante de remover da primeira lista os elementos que n ̃ao pertencem à segunda.
+que retorna a lista resultante de remover da primeira lista os elementos que não pertencem à segunda.
 Por exemplo, intersect [1,1,2,3,4] [1,3,5] corresponde a [1,1,3].
 -}
 
+intersect' :: Eq a => [a] -> [a] -> [a]
+intersect' l [] = l
+intersect' [] _ = []
+intersect' (h:t) l |(elem h l) = h: intersect' t l
+                   |otherwise = intersect' t l
+
 {-
-31. Apresente uma definição recursiva da função (pré-definida) insert :: Ord a => -> a -> [a] -> [a]
+31. Apresente uma definição recursiva da função (pré-definida) insert :: Ord a => a -> [a] -> [a]
 que dado um elemento e uma lista ordenada retorna a lista resultante de inserir ordenadamente esse elemento na lista.
 Por exemplo, insert 25 [1,20,30,40] corresponde a [1,20,25,30,40].
 -}
 
+insert' :: Ord a => a -> [a] -> [a]
+insert' n [] = [n]
+insert' n (h:t) = if (n < h)
+  then n: h: t
+  else h: insert' n t
+
 {-
 32. Apresente uma definição recursiva da função (pré-definida) unwords :: [String] -> String
 que junta todas as strings da lista numa só, separando-as por um espaço.
-Por exemplo,unwords ["Programacao", "Funcional"]correspondea"Programacao Funcional".
+Por exemplo, unwords ["Programacao", "Funcional"] corresponde a "Programacao Funcional".
 -}
+
+unwords' :: [String] -> String
+unwords' [] = []
+unwords' (h:t) = h ++ " " ++ unwords' t
 
 {-
 33. Apresente uma definição recursiva da função (pré-definida) unlines :: [String] -> String
