@@ -414,11 +414,18 @@ que junta todas as strings da lista numa só, separando-as pelo caracter ’\n�
 Por exemplo, unlines ["Prog", "Func"] corresponde a "Prog\nFunc\n".
 -}
 
+unlines' :: [String] -> String
+unlines' [] = ""
+unlines' (x:xs) = x ++ "\n" ++  unlines' xs
+
 {-
 34. Apresente uma definição recursiva da função pMaior :: Ord a => [a] -> Int
 que dada uma lista não vazia, retorna a posição onde se encontra o maior elemento da lista.
 As posições da lista começam em 0, i.e., a função deverá retornar 0 se o primeiro elemento da lista for o maior.
 -}
+
+-- pMaior :: Ord a => [a] -> Int
+
 
 {-
 35. Apresente uma definição recursiva da função (pré-definida) lookup :: Eq a => a -> [(a,b)] -> Maybe b
@@ -427,11 +434,22 @@ atendendo a uma condição dada pelo primeiro argumento.
 Por exemplo, lookup ’a’ [(’a’,1),(’b’,4),(’c’,5)] corresponde à lista Just 1.
 -}
 
+lookup' :: Eq a => a -> [(a,b)] -> Maybe b
+lookup' x [] = Nothing
+lookup' x ((l,v):t) |(x==l) = Just v
+                   |otherwise = lookup' x t
+
 {-
 36. Defina a função preCrescente :: Ord a => [a] -> [a] calcula o maior prefixo crescente
 de uma lista.
 Por exemplo, preCrescente [3,7,9,6,10,22] corresponde a [3,7,9].
 -}
+
+preCrescente' :: Ord a => [a] -> [a]
+preCrescente' [] = []
+preCrescente' [x] = [x]
+preCrescente' (x:y:xs) = if (x>=y) then [x]
+                                  else x: preCrescente' (y:xs)
 
 {-
 37. Apresente uma definição recursiva da função iSort :: Ord a => [a] -> [a]
@@ -440,12 +458,26 @@ Assuma, se precisar, que existe definida a função insert :: Ord a => a -> [a] 
 que dado um elemento e uma lista ordenada retorna a lista resultante de inserir ordenadamente esse elemento na lista.
 -}
 
+iSort' :: Ord a => [a] -> [a]
+iSort' [] = []
+iSort' (x:xs) = insere x (iSort' xs)
+
+insere :: Ord a => a -> [a] -> [a]
+insere x [] = [x]
+insere x (h:t) = if x <= h then (x:h:t)
+                           else h:insere x t
+
 {-
 38. Apresente uma definição recursiva da função menor :: String -> String -> Bool
 que dadas duas strings, retorna True se e só se a primeira for menor do que a segunda,
-segundo a ordem lexicográfica (i.e., do dicion ́ario)
+segundo a ordem lexicográfica (i.e., do dicionário)
 Por exemplo, menor "sai" "saiu" corresponde a True enquanto que menor "programacao" "funcional" corresponde a False.
 -}
+
+menor' :: String -> String -> Bool
+menor' _ "" = False
+menor' "" _ = True
+menor' (h:t) (h':t') = h <= h' && menor' t t'
 
 {-
 39. Considere que se usa o tipo [(a,Int)] para representar multi-conjuntos de elementos de a.
@@ -455,6 +487,11 @@ Por exemplo, elemMSet ’a’ [(’b’,2), (’a’,4), (’c’,1)] correspond
 enquanto que elemMSet ’d’ [(’b’,2), (’a’,4), (’c’,1)] corresponde a False.
 -}
 
+elemMSet' :: Eq a => a -> [(a,Int)] -> Bool
+elemMSet' _ [] = False
+elemMSet' x ((h,t):xs) = if x==h then True
+                                 else elemMSet' x xs
+
 {-
 40. Considere que se usa o tipo [(a,Int)] para representar multi-conjuntos de elementos de a.
 Considere ainda que nestas listas não há pares cuja primeira componente coincida, nem cuja segunda componente seja menor ou igual a zero.
@@ -462,12 +499,23 @@ Defina a função converteMSet :: [(a,Int)] -> [a] que converte um multi-conjuto
 Por exemplo, converteMSet [(’b’,2), (’a’,4), (’c’,1)] corresponde a "bbaaaac".
 -}
 
+converteMSet' :: [(a,Int)] -> [a]
+converteMSet' [] = []
+converteMSet' ((x,1):t) = x : converteMSet' t
+converteMSet' ((x,n):t) = x: converteMSet' ((x,n-1):t)
+
 {-
 41. Considere que se usa o tipo [(a,Int)] para representar multi-conjuntos de elementos de a.
 Considere ainda que nestas listas não há pares cuja primeira componente coincida, nem cuja segunda componente seja menor ou igual a zero.
 Defina a função insereMSet :: Eq a => a -> [(a,Int)] -> [(a,Int)] que acrescenta um elemento a um multi-conjunto.
 Por exemplo, insereMSet ’c’ [(’b’,2), (’a’,4), (’c’,1)] corresponde a [(’b’,2), (’a’,4), (’c’,2)].
 -}
+
+insereMSet' :: Eq a => a -> [(a,Int)] -> [(a,Int)]
+insereMSet' x [] = [(x,1)]
+insereMSet' x ((e,v):t) = if (x==e)
+  then ((e,v+1):t)
+  else (e,v): insereMSet' x t
 
 {-
 42. Considere que se usa o tipo [(a,Int)] para representar multi-conjuntos de elementos de a.
@@ -477,6 +525,14 @@ Se o elemento não existir, deve ser retornado o multi-conjunto recebido.
 Por exemplo, removeMSet ’c’ [(’b’,2), (’a’,4), (’c’,1)] corresponde a [(’b’,2), (’a’,4)].
 -}
 
+removeMSet' :: Eq a => a -> [(a,Int)] -> [(a,Int)]
+removeMSet' x [] = []
+removeMSet' x ((e,v):t)=  if (x/=e)
+  then (e,v): removeMSet' x t
+  else if (v==1)
+    then t
+    else ((e,v-1):t)
+
 {-
 43. Considere que se usa o tipo [(a,Int)] para representar multi-conjuntos de elementos de a.
 Considere ainda que nestas listas não há pares cuja primeira componente coincida, nem cuja segunda componente seja menor ou igual a zero.
@@ -485,15 +541,26 @@ calcula o multi-conjunto dos seus elementos.
 Por exemplo, constroiMSet "aaabccc" corresponde a [(’a’,3), (’b’,1), (’c’,3)].
 -}
 
+constroiMSet' :: Ord a => [a] -> [(a,Int)]
+constroiMSet' [] = []
+constroiMSet' (l:ls) = insereMSet' l (constroiMSet' ls)   -- REVERSE?
+
 {-
 44. Apresente uma definição recursiva da função pré-definida partitionEithers :: [Either a b] -> ([a],[b])
 que divide uma lista de Eithers em duas listas.
 -}
 
+
+
 {-
 45. Apresente uma definição recursiva da função pré-definida catMaybes :: [Maybe a] -> [a]
 que colecciona os elementos do tipo a de uma lista.
 -}
+
+catMaybes' :: [Maybe a] -> [a]
+catMaybes' [] = []
+catMaybes' (m:ms) = case m of Nothing -> catMaybes ms
+                             Just x -> x : catMaybes ms
 
 {-
 46. Considere o seguinte tipo para representar movimentos de um robot.
