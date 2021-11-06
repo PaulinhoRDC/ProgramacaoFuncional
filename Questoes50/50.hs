@@ -559,8 +559,8 @@ que colecciona os elementos do tipo a de uma lista.
 
 catMaybes' :: [Maybe a] -> [a]
 catMaybes' [] = []
-catMaybes' (m:ms) = case m of Nothing -> catMaybes ms
-                             Just x -> x : catMaybes ms
+catMaybes' (m:ms) = case m of Nothing -> catMaybes' ms
+                              Just x -> x : catMaybes' ms
 
 {-
 46. Considere o seguinte tipo para representar movimentos de um robot.
@@ -572,16 +572,36 @@ que, dadas as posições inicial e final (coordenadas) do robot,
 produz uma lista de movimentos suficientes para que o robot passe de uma posição para a outra.
 -}
 
+data Movimento = Norte | Sul | Este | Oeste
+              deriving Show
+
+caminho :: (Int,Int) -> (Int,Int) -> [Movimento]
+caminho (x,y) (x2,y2) | (x>x2) = Oeste: caminho (x-1,y) (x2,y2)
+                      | (x<x2) = Este: caminho (x+1,y) (x2,y2)
+                      | (y>y2) = Sul: caminho (x,y-1) (x2,y2)
+                      | (y<y2) = Norte: caminho (x,y+1) (x2,y2)
+                      | otherwise = []
+
 {-
 47. Consider o seguinte tipo de dados,
           data Movimento = Norte | Sul | Este | Oeste
                         deriving Show
 Defina a função hasLoops :: (Int,Int) -> [Movimento] -> Bool
 que dada uma posição inicial e uma lista de movimentos (correspondentes a um percurso)
-verifica se o robot alguma vez volta a passar pela posi ̧c ̃ao inicial ao longo do percurso correspondente.
+verifica se o robot alguma vez volta a passar pela posição inicial ao longo do percurso correspondente.
 Pode usar a função posicao definida acima.
 -}
 
+hasLoops :: (Int,Int) -> [Movimento] -> Bool
+hasLoops _ [] = False
+hasLoops pi ms = (pi == posicao pi ms) || hasLoops pi (init ms)
+
+posicao :: (Int,Int) -> [Movimento] -> (Int,Int)
+posicao (x,y) [] = (x,y)
+posicao (x,y) (h:t) = case h of Norte -> posicao (x,y+1) t
+                                Sul -> posicao (x,y-1) t
+                                Este -> posicao (x+1,y) t
+                                Oeste -> posicao (x-1,y) t
 {-
 48. Considere os seguintes tipos para representar pontos e rectângulos, respectivamente.
 Assuma que os rectângulos têm os lados paralelos aos eixos e são representados apenas por dois dos pontos mais afastados.
