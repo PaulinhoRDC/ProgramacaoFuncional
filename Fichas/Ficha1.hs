@@ -238,7 +238,7 @@ angulo :: Ponto -> Double
 angulo (Polar d a) = a
 angulo (Cartesiano x y) = atan (x/y)
 
--- e) dist :: Ponto -> Ponto -> Double que calcula a distˆancia entre dois pontos.
+-- e) dist :: Ponto -> Ponto -> Double que calcula a distância entre dois pontos.
 
 distpontos :: Ponto -> Ponto -> Double
 distpontos p1 p2 = sqrt ((posx p1 - posx p2)^2 + (posy p1 - posy p2)^2)

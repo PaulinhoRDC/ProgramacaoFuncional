@@ -424,8 +424,21 @@ que dada uma lista não vazia, retorna a posição onde se encontra o maior elem
 As posições da lista começam em 0, i.e., a função deverá retornar 0 se o primeiro elemento da lista for o maior.
 -}
 
--- pMaior :: Ord a => [a] -> Int
+pMaior :: Ord a => [a] -> Int
+pMaior [_] = 0
+pMaior (h:t)
+    | h >= (t !! x) = 0
+    | otherwise = 1 + x
+    where x = pMaior t
 
+pMaior' :: Ord a => [a] -> Int
+pMaior' [_] = 0
+pMaior' l = auxMaior l 0
+
+auxMaior :: Ord a => [a] -> Int -> Int
+auxMaior [x] pos = pos
+auxMaior (x:y:t) pos = if (x>=y) then auxMaior (x:t) pos
+                                 else auxMaior (y:t) pos+1
 
 {-
 35. Apresente uma definição recursiva da função (pré-definida) lookup :: Eq a => a -> [(a,b)] -> Maybe b
@@ -437,7 +450,7 @@ Por exemplo, lookup ’a’ [(’a’,1),(’b’,4),(’c’,5)] corresponde à
 lookup' :: Eq a => a -> [(a,b)] -> Maybe b
 lookup' x [] = Nothing
 lookup' x ((l,v):t) |(x==l) = Just v
-                   |otherwise = lookup' x t
+                    |otherwise = lookup' x t
 
 {-
 36. Defina a função preCrescente :: Ord a => [a] -> [a] calcula o maior prefixo crescente
@@ -449,7 +462,7 @@ preCrescente' :: Ord a => [a] -> [a]
 preCrescente' [] = []
 preCrescente' [x] = [x]
 preCrescente' (x:y:xs) = if (x>=y) then [x]
-                                  else x: preCrescente' (y:xs)
+                                   else x: preCrescente' (y:xs)
 
 {-
 37. Apresente uma definição recursiva da função iSort :: Ord a => [a] -> [a]
@@ -548,8 +561,15 @@ constroiMSet' (l:ls) = insereMSet' l (constroiMSet' ls)   -- REVERSE?
 {-
 44. Apresente uma definição recursiva da função pré-definida partitionEithers :: [Either a b] -> ([a],[b])
 que divide uma lista de Eithers em duas listas.
+EXEMPLO: partitionEithers [Left 1, Right 2, Left 3, Right 4, Left 5] devolve ([1,3,5],[2,4])
 -}
 
+partitionEithers' :: [Either a b] -> ([a],[b])
+partitionEithers' [] = ([],[])
+partitionEithers' ((Left x):t) = (x:xs,ys)
+      where (xs,ys) = partitionEithers' t
+partitionEithers' ((Right y):t) = (xs,y:ys)
+      where (xs,ys) = partitionEithers' t
 
 
 {-
@@ -611,6 +631,18 @@ Defina a função contaQuadrados :: [Rectangulo] -> Int
 que, dada uma lista com rectângulos, conta quantos deles são quadrados.
 -}
 
+type Ponto = (Float,Float)
+data Rectangulo = Rect Ponto Ponto
+
+contaQuadrados :: [Rectangulo] -> Int
+contaQuadrados [] = 0
+contaQuadrados (h:t)
+    | eQuadrado h = 1 + contaQuadrados t
+    | otherwise = contaQuadrados t
+
+eQuadrado :: Rectangulo -> Bool
+eQuadrado (Rect (x1,y1) (x2,y2)) = abs (y2 - y1) == abs (x2 - x1)
+
 {-
 49. Considere os seguintes tipos para representar pontos e rectângulos, respectivamente.
 Assuma que os rectêngulos têm os lados paralelos aos eixos e são representados apenas por dois dos pontos mais afastados.
@@ -620,6 +652,10 @@ Defina a função areaTotal :: [Rectangulo] -> Float
 que, dada uma lista com rectângulos, determina a área total que eles ocupam.
 -}
 
+areaTotal :: [Rectangulo] -> Float
+areaTotal [] = 0
+areaTotal ((Rect (x1,y1) (x2,y2)):t) = abs (x2 - x1) * abs (y2 - y1) + areaTotal t
+
 {-
 50. Considere o seguinte tipo para representar o estado de um equipamento.
         data Equipamento = Bom | Razoavel | Avariado
@@ -627,3 +663,19 @@ que, dada uma lista com rectângulos, determina a área total que eles ocupam.
 Defina a função naoReparar :: [Equipamento] -> Int
 que determina a quantidadede equipamentos que não estão avariados.
 -}
+
+data Equipamento = Bom | Razoavel | Avariado
+                deriving Show
+
+naoReparar :: [Equipamento] -> Int
+naoReparar [] = 0
+naoReparar (Bom:t) = 1 + naoReparar t
+naoReparar (Razoavel:t) = 1 + naoReparar t
+naoReparar (Avariado:t) = naoReparar t
+
+-- ou
+
+naoReparar' :: [Equipamento] -> Int
+naoReparar' [] = 0
+naoReparar' (h:t) = case h of Avariado -> naoReparar' t
+                              _ -> 1 + naoReparar' t
