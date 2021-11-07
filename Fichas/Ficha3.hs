@@ -155,15 +155,48 @@ type Agenda = [(Nome, [Contacto])]
 -- a) Defina a função acrescEmail :: Nome -> String -> Agenda -> Agenda que,
 -- dado um nome, um email e uma agenda, acrescenta essa informação à agenda.
 
+acrescEmail :: Nome -> String -> Agenda -> Agenda
+acrescEmail n e [] = [(n, [Email e])]
+acrescEmail n e ((n2,l):xs) | (n==n2) = (n2,l:(Email e)) : xs
+                           | otherwise = (n2,l) : acrescEmail n e xs
+
 -- b) Defina a função verEmails :: Nome -> Agenda -> Maybe [String] que, dado um nome e uma agenda,
 -- retorna a lista dos emails associados a esse nome.
 -- Se esse nome não existir na agenda a função deve retornar Nothing.
 
+verEmails :: Nome -> Agenda -> Maybe [String]
+verEmails n [] = Nothing
+verEmails n ((x,l):xs) | (n==x) = Just (daListaStr l)
+                       | otherwise = verEmails n xs
+
+daListaStr :: [Contacto] -> [String]
+daListaStr [] = []
+daListaStr (h:t) = case h of Email s -> s: daListaStr t
+                             _ -> daListaStr t
+
 -- c) Defina a função consTelefs :: [Contacto] -> [Integer] que,
 -- dada uma lista de contactos, retorna a lista de todos os números de telefone dessa lista (tanto telefones fixos como telemóveis).
 
+consTelefs :: [Contacto] -> [Integer]
+consTelefs [] = []
+consTelefs (h:t) = case h of Casa s -> s: consTelefs t
+                             Trab s -> s: consTelefs t
+                             Tlm s -> s: consTelefs t
+                             _ -> consTelefs t
+
 -- d) Defina a função casa :: Nome -> Agenda -> Maybe Integer que,
 -- dado um nome e uma agenda, retorna o número de telefone de casa (caso exista).
+
+casa :: Nome -> Agenda -> Maybe Integer
+casa _ [] = Nothing
+casa n ((x,l): t) | (n==x) = numCasa l
+                  | otherwise = casa n t
+
+
+numCasa :: [Contacto] -> Maybe Integer
+numCasa [] = Nothing
+numCasa (h:t) = case h of Casa s -> Just s
+                          _ -> numCasa t
 
 
 {-
@@ -248,20 +281,69 @@ porIdade (D d m a) tabela = (n,idade) : porIdade (D d m a) ts
 data Movimento = Credito Float | Debito Float
   deriving Show
 
-data Data = D Int Int Int
-  deriving Show
-
 data Extracto = Ext Float [(Data, String, Movimento)]
   deriving Show
 
 -- a) Construa a função extValor :: Extracto -> Float -> [Movimento]
 -- que produz uma lista de todos os movimentos (créditos ou débitos) superiores a um determinado valor.
 
+extValor :: Extracto -> Float -> [Movimento]
+extValor (Ext s l) n = daMov l n
+
+daMov :: [(Data, String, Movimento)] -> Float -> [Movimento]
+daMov [] _ = []
+daMov ((_,_, Credito x): t) n = if (x>n)
+  then (Credito x) : daMov t n
+  else daMov t n
+daMov ((_,_, Debito x): t) n = if (x>n)
+  then (Debito x) : daMov t n
+  else daMov t n
+
 -- b) Defina a função filtro :: Extracto -> [String] -> [(Data,Movimento)]
 -- que retorna informação relativa apenas aos movimentos cuja descrição esteja incluída na lista fornecida no segundo parâmetro.
+
+filtro :: Extracto -> [String] -> [(Data,Movimento)]
+filtro (Ext s l) n = filtroAux l n
+
+filtroAux :: [(Data, String, Movimento)] -> [String] -> [(Data,Movimento)]
+filtroAux [] _ = []
+filtroAux ((d,s,m): t) x = if (s `elem` x)
+  then (d,m): filtroAux t x
+  else filtroAux t x
+
 
 -- c) Defina a função creDeb :: Extracto -> (Float,Float)
 -- que retorna o total de créditos e de débitos de um extracto no primeiro e segundo elementos de um par, respectivamente.
 
+creDeb :: Extracto -> (Float,Float)
+creDeb (Ext s l) = daPar l
+
+daPar l :: [(Data, String, Movimento)] -> (Float,Float)
+daPar [] = (0,0)
+daPar ((_,_, Credito x):t) = (x+c, d)
+daPar ((_,_, Debito x):t) = (c, x+d)
+          where (c,d) = daPar t
+
+-- COM ACUMULADOR SERIA DESTA FORMA:
+
+creDeb2 :: Extracto -> (Float, Float)
+creDeb2 (Ext s l) = creDebAC l (0,0)
+
+creDebAC :: [(Data, String, Movimento)] -> (Float,Float) -> (Float, Float)
+creDebAC [] (c,d) = (c,d)
+creDebAC ((_,_, Credito x): t) (c,d) = creDebAC (c+x,d)
+creDebAC ((_,_, Debito x): t) (c,d) = creDebAC (c,d+x)
+
+
 -- d) Defina a função saldo :: Extracto -> Float
 -- que devolve o saldo final que resulta da execução de todos os movimentos no extracto sobre o saldo inicial.
+
+saldo :: Extracto -> Float
+saldo (Ext s l) = let (c,d) = creDeb (Ext s l)
+                  in s + c - d
+
+-- OU
+
+saldo2 :: Extracto -> Float
+saldo2 e@(Ext s l) = let (c,d) = creDeb e
+                  in s + c - d

@@ -134,6 +134,15 @@ tresUlt (x:xs)
   | (length (x:xs)<= 3) = (x:xs)
   | otherwise = tresUlt xs
 
+-- Esta lternatica gasta muita memória, façamos outra que não o faça
+
+tresUlt' :: [a] -> [a]
+tresUlt' [] = []
+tresUlt' [x] = [x]
+tresUlt' [x,y] =[x,y]
+tresUlt' [x,y,z] = [x,y,z]
+tresUlt' (x:xs) = tresUlt' xs
+
 -- g) segundos :: [(a,b)] -> [b] que calcula a lista das segundas componentes dos pares.
 
 segundos :: [(a,b)] -> [b]
@@ -250,8 +259,14 @@ mult (n,e) ((n1,e1):t) = (n*n1,e+e1) : mult (n,e) t
 -- h) normaliza :: Polinomio -> Polinomio que dado um polinómio constrói um polinómio
 --   equivalente em que não podem aparecer varios monómios com o mesmo grau.
 
---normaliza :: Polinomio -> Polinomio
---normaliza
+normaliza :: Polinomio -> Polinomio
+normaliza [] = []
+normaliza ((c,e):t) = insere (c,e) (normaliza t)
+
+insere :: Monomio -> Polinomio -> Polinomio
+insere (c,e) [] = [(c,e)]
+insere (c,e) ((a,b):t) | (e==b) = (c+a,b):t
+                       | otherwise = (c,e): insere (c,e) t
 
 -- i) soma :: Polinomio -> Polinomio -> Polinomio que soma dois polinómios de forma a que
 -- se os polinómios que recebe estiverem normalizados produz também um polinómio normalizado.
