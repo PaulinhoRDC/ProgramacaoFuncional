@@ -16,12 +16,12 @@ enumFromTo' start end |(start > end)  = []
 {-
 2. Apresente uma definição recursiva da função (pré-definida) enumFromThenTo :: Int -> Int -> Int -> [Int]
 que constrói a lista dos números inteiros compreendidos entre dois limites e espaçados de um valor constante.
-Por exemplo, enumFromThenTo 1 3 10 corresponde à lista [1,3,5,7,9].
+Por exemplo, enumFromThenTo' 1 3 10 corresponde à lista [1,3,5,7,9].
 -}
 
 enumFromThenTo' :: Int -> Int -> Int -> [Int]
-enumFromThenTo' start next end | start > end && next > start || start < end && next < start || start == next && start > end = []
-                               | otherwise = start: enumFromThenTo' next (next + (next-start)) end
+enumFromThenTo' start next end | start > end && next > start || start < end && next < start || start == next && start > end = []            -- 20 30 10 || 10 5 20 || 10 10 5
+                               | otherwise = start: enumFromThenTo' next (next + (next-start)) end   -- 1 f(3,5,10) - 1 3 f(5,7,10) - 1 3 5 f(7,9,10) - 1 3 5 7 f(9,11,10) - 1 3 5 7 9 f(11,13,10)
 
 {-
 3.Apresente uma definiçã recursiva da função (pré-definida) (++) :: [a] -> [a] -> [a]
@@ -160,7 +160,7 @@ Por exemplo, inits [11,21,13] corresponde a [[],[11],[11,21],[11,21,13]].
 
 inits' :: [a]->[[a]]
 inits' [] = [[]]
-inits' l = inits' (init l) ++ [l]  -- init retira último elemento da lista      // OU //   inits' (init l) : l
+inits' l = inits' (init l) ++ [l]  -- init retira último elemento da lista
 
 {-
 14. Apresente uma definição recursiva da função (pré-definida) tails :: [a] -> [[a]]
@@ -256,6 +256,7 @@ primeCheck n m
     | mod n m == 0 = False
     | otherwise = primeCheck n (m + 1)
 
+
 {-
 22. Apresente uma definição recursiva da função (pré-definida) isPrefixOf :: Eq a => [a] -> [a] -> Bool
 que testa se uma lista é prefixo de outra.
@@ -279,7 +280,7 @@ isPrefixOf'' (h:t) (h1:t1) = (h==h1) && isPrefixOf'' t t1
 {-
 23. Apresente uma definiçã recursiva da funçã (pré-definida) isSuffixOf :: Eq a => [a] -> [a] -> Bool
 que testa se uma lista é sufixo de outra.
-Por exemplo,isSuffixOf [20,30] [10,20,30] corresponde a True enquanto que isSuffixOf [10,30] [10,20,30] corresponde a False.
+Por exemplo,isSuffixOf [20,30] [10,20,30] corresponde a True enquanto que isSuffixOf' [10,30] [10,20,30] corresponde a False.
 -}
 
 isSuffixOf' :: Eq a => [a] -> [a] -> Bool
@@ -364,7 +365,7 @@ remPrimOcorr (h:t) (h2:t2) | (h==h2) = remPrimOcorr t t2
 {-
 29. Apresente uma definição recursiva da função (pré-definida) union :: Eq a => [a] -> [a] -> [a]
 que retorna a lista resultante de acrescentar à primeira lista os elementos da segunda que não ocorrem na primeira.
-Por exemplo, union [1,1,2,3,4] [1,5] corresponde a [1,1,2,3,4,5].
+Por exemplo, union' [1,1,2,3,4] [1,5] corresponde a [1,1,2,3,4,5].
 -}
 
 union' :: Eq a => [a] -> [a] -> [a]
@@ -401,17 +402,17 @@ insert' n (h:t) = if (n < h)
 {-
 32. Apresente uma definição recursiva da função (pré-definida) unwords :: [String] -> String
 que junta todas as strings da lista numa só, separando-as por um espaço.
-Por exemplo, unwords ["Programacao", "Funcional"] corresponde a "Programacao Funcional".
+Por exemplo, unwords' ["Programacao", "Funcional"] corresponde a "Programacao Funcional".
 -}
 
 unwords' :: [String] -> String
-unwords' [] = []
-unwords' (h:t) = h ++ " " ++ unwords' t
+unwords' [] = ""
+unwords' (h:t) = h ++ (if null t then "" else " ") ++ unwords' t
 
 {-
 33. Apresente uma definição recursiva da função (pré-definida) unlines :: [String] -> String
 que junta todas as strings da lista numa só, separando-as pelo caracter ’\n’.
-Por exemplo, unlines ["Prog", "Func"] corresponde a "Prog\nFunc\n".
+Por exemplo, unlines' ["Prog", "Func"] corresponde a "Prog\nFunc\n".
 -}
 
 unlines' :: [String] -> String
@@ -431,13 +432,15 @@ pMaior (h:t)
     | otherwise = 1 + x
     where x = pMaior t
 
-pMaior' :: Ord a => [a] -> Int
-pMaior' [_] = 0
+-- OU
+
+pMaior' :: Ord a => [a] -> Int                    -- [3,4,6,5] -> 2
+pMaior' [x] = 0
 pMaior' l = auxMaior l 0
 
 auxMaior :: Ord a => [a] -> Int -> Int
 auxMaior [x] pos = pos
-auxMaior (x:y:t) pos = if (x>=y) then auxMaior (x:t) pos
+auxMaior (x:y:t) pos = if (x>=y) then auxMaior (x:t) pos                  -- [3,4,6,5] 0 -> [4,6,5] 1 -> [6,5] 2 -> [6] 2 -> 2
                                  else auxMaior (y:t) pos+1
 
 {-
@@ -551,12 +554,12 @@ removeMSet' x ((e,v):t)=  if (x/=e)
 Considere ainda que nestas listas não há pares cuja primeira componente coincida, nem cuja segunda componente seja menor ou igual a zero.
 Defina a função constroiMSet :: Ord a => [a] -> [(a,Int)] dada uma lista ordenada por ordem crescente,
 calcula o multi-conjunto dos seus elementos.
-Por exemplo, constroiMSet "aaabccc" corresponde a [(’a’,3), (’b’,1), (’c’,3)].
+Por exemplo, constroiMSet' "aaabccc" corresponde a [(’a’,3), (’b’,1), (’c’,3)].
 -}
 
 constroiMSet' :: Ord a => [a] -> [(a,Int)]
 constroiMSet' [] = []
-constroiMSet' (l:ls) = insereMSet' l (constroiMSet' ls)   -- REVERSE?
+constroiMSet' (l:ls) = reverse ( insereMSet' l (constroiMSet' ls) )   -- REVERSE?
 
 {-
 44. Apresente uma definição recursiva da função pré-definida partitionEithers :: [Either a b] -> ([a],[b])
@@ -564,7 +567,7 @@ que divide uma lista de Eithers em duas listas.
 EXEMPLO: partitionEithers [Left 1, Right 2, Left 3, Right 4, Left 5] devolve ([1,3,5],[2,4])
 -}
 
-partitionEithers' :: [Either a b] -> ([a],[b])
+partitionEithers' :: [Either a b] -> ([a],[b])      -- data Either a b = Left a | Right b
 partitionEithers' [] = ([],[])
 partitionEithers' ((Left x):t) = (x:xs,ys)
       where (xs,ys) = partitionEithers' t
@@ -577,7 +580,7 @@ partitionEithers' ((Right y):t) = (xs,y:ys)
 que colecciona os elementos do tipo a de uma lista.
 -}
 
-catMaybes' :: [Maybe a] -> [a]
+catMaybes' :: [Maybe a] -> [a]            -- Maybe: Nothing | Just x     [Nothing, Nothing, Just 3, Just 4] -> [3,4]
 catMaybes' [] = []
 catMaybes' (m:ms) = case m of Nothing -> catMaybes' ms
                               Just x -> x : catMaybes' ms
@@ -614,7 +617,7 @@ Pode usar a função posicao definida acima.
 
 hasLoops :: (Int,Int) -> [Movimento] -> Bool
 hasLoops _ [] = False
-hasLoops pi ms = (pi == posicao pi ms) || hasLoops pi (init ms)
+hasLoops pi ms = (pi == posicao pi ms) || hasLoops pi (init ms)                     -- (3,4) [SUL,NORTE,SUL] -> (3,4) [SUL,NORTE] -> (3,4) == (3,4)
 
 posicao :: (Int,Int) -> [Movimento] -> (Int,Int)
 posicao (x,y) [] = (x,y)
@@ -655,6 +658,8 @@ que, dada uma lista com rectângulos, determina a área total que eles ocupam.
 areaTotal :: [Rectangulo] -> Float
 areaTotal [] = 0
 areaTotal ((Rect (x1,y1) (x2,y2)):t) = abs (x2 - x1) * abs (y2 - y1) + areaTotal t
+
+
 
 {-
 50. Considere o seguinte tipo para representar o estado de um equipamento.
