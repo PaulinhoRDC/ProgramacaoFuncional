@@ -39,7 +39,7 @@ infixa :: ExpInt -> String
 infixa (Const x) = show x
 infixa (Simetrico e) = "-" ++ (infixa e)
 infixa (Mais e1 e2) = "( " ++ (infixa e1) ++ "+" ++ (infixa e2) ++ " )"
-infixa (Mais e1 e2) = "( " ++ (infixa e1) ++ "-" ++ (infixa e2) ++ " )"
+infixa (Menos e1 e2) = "( " ++ (infixa e1) ++ "-" ++ (infixa e2) ++ " )"
 infixa (Mult e1 e2) = "( " ++ (infixa e1) ++ "*" ++ (infixa e2) ++ " )"
 
 -- (c) Defina uma outra função de conversão para strings posfixa :: ExpInt -> String
@@ -56,20 +56,39 @@ posfixa (Mult e1 e2) = (posfixa e1) ++ " " ++ (posfixa e2) ++ " *"
 
 2. Considere o seguinte tipo para representar árvores irregulares (rose trees).
                   data RTree a = R a [RTree a]
+
+                  Árvore de exemplo para testar as funções:
+                  arvore = R 6 [R 4 [R 7 [R 1 [],
+                                          R 3 []],
+                                     R 9 []],
+                                R 3 [R 12 []],
+                                R 6 [],
+                                R 11 []]
+
 Defina as seguintes funções sobre estas árvores:
 -}
 
 data RTree a = R a [RTree a]
 
+arvore = R 6 [R 4 [R 7 [R 1 [],
+                        R 3 []],
+                   R 9 []],
+              R 3 [R 12 []],
+              R 6 [],
+              R 11 []]
+
 -- (a) soma :: Num a => RTree a -> a que soma os elementos da árvore.
 
 soma :: Num a => RTree a -> a
-soma (R x l) = x + (map soma l)
+soma (R x l) = x + sum (map soma l)
 
 -- (b) altura :: RTree a -> Int que calcula a altura da árvore.
 
+altura :: RTree a -> Int
+altura (R x []) = 1
+altura (R x l) = 1 + maximum (map altura l)
 
--- (c) prune :: Int -> RTree a -> RTree a que remove de uma árvore todos os elementos a partir de uma determinada profundidade.
+-- (c) prune :: Int -> RTree a -> RTree a ,que remove de uma árvore todos os elementos a partir de uma determinada profundidade.
 
 prune :: Int -> RTree a -> RTree a
 prune 1 (R x l) = (R x [])
@@ -106,13 +125,17 @@ data BTree a = Empty | Node a (BTree a) (BTree a)
 data LTree a = Tip a | Fork (LTree a) (LTree a)
 
 
--- (a) ltSum :: Num a => LTree a -> a que soma as folhas de uma árvore.
+-- (a) ltSum :: Num a => LTree a -> a ,que soma as folhas de uma árvore.
 
 ltSum :: Num a => LTree a -> a
 ltSum (Tip a) = a
 ltSum (Fork a1 a2) = (ltSum a1) + (ltSum a2)
 
--- (b) listaLT :: LTree a -> [a] que lista as folhas de uma árvore (da esquerda para a direita).
+-- (b) listaLT :: LTree a -> [a] ,que lista as folhas de uma árvore (da esquerda para a direita).
+
+listaLT :: LTree a -> [a]
+listaLT (Tip n) = [n]
+listaLT (Fork a b) = listaLT a ++ listaLT b
 
 -- (c) ltHeight :: LTree a -> Int que calcula a altura de uma árvore.
 
@@ -145,3 +168,10 @@ splitFTree (No x e d) = (Node x e1 d1, Fork e2 d2)
 
 -- (b) Defina ainda a função joinTrees :: BTree a -> LTree b -> Maybe (FTree a b)
 -- que sempre que as árvores sejam compatíveis as junta numa só.
+
+joinTrees :: BTree a -> LTree b -> Maybe (FTree a b)
+joinTrees (Empty) (Tip n) = Just (Leaf n)
+joinTrees (Node e l r) (Fork a b) = Just (No e aux aux2)
+    where Just aux = joinTrees l a
+          Just aux2 = joinTrees r b
+joinTrees _ _ = Nothing
