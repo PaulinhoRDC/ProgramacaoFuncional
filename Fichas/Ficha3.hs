@@ -158,7 +158,7 @@ type Agenda = [(Nome, [Contacto])]
 acrescEmail :: Nome -> String -> Agenda -> Agenda
 acrescEmail n e [] = [(n, [Email e])]
 acrescEmail n e ((n2,l):xs) | (n==n2) = (n2,l:(Email e)) : xs
-                           | otherwise = (n2,l) : acrescEmail n e xs
+                            | otherwise = (n2,l) : acrescEmail n e xs
 
 -- b) Defina a função verEmails :: Nome -> Agenda -> Maybe [String] que, dado um nome e uma agenda,
 -- retorna a lista dos emails associados a esse nome.
@@ -318,11 +318,11 @@ filtroAux ((d,s,m): t) x = if (s `elem` x)
 creDeb :: Extracto -> (Float,Float)
 creDeb (Ext s l) = daPar l
 
-daPar l :: [(Data, String, Movimento)] -> (Float,Float)
+daPar :: [(Data, String, Movimento)] -> (Float,Float)
 daPar [] = (0,0)
 daPar ((_,_, Credito x):t) = (x+c, d)
 daPar ((_,_, Debito x):t) = (c, x+d)
-          where (c,d) = daPar t
+        where (c,d) = daPar t
 
 -- COM ACUMULADOR SERIA DESTA FORMA:
 
