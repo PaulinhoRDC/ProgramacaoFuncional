@@ -173,3 +173,17 @@ Por exemplo, paths (R 1 [R 2 [], R 3 [R 4 [R 5 [], R 6 []]], R 7 []]) deve corre
 (b) Defina a função unpaths :: Eq a => [[a]] -> RTree a inversa da anterior, i.e.,
 tal que, unpaths (paths t) == t, para qualquer árvore t :: Eq a => RTree a.
 -}
+
+data RTree a = R a [RTree a]
+      deriving (Show, Eq)
+
+
+paths :: RTree a -> [[a]]
+paths (R a []) = [[a]]
+paths (R a outras) = [a: x | x <- concat [paths branch | branch <- outras]]
+
+-- ---------------
+
+unpaths :: Eq a => [[a]] -> RTree a
+unpaths [[x]] = R x []
+unpaths ((x:xs):t) = R x [unpaths [xs]] -- ++ "," ++ (unpaths t)
