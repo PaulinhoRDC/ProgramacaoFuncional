@@ -2,6 +2,10 @@ module Teste1819 where
 
 import  Data.Char
 
+import System.Random
+import System.IO
+import System.IO.Error
+
 {-
 1. Apresente uma definição recursiva das seguintes funções (pré-definidas) sobre listas:
 
@@ -113,6 +117,17 @@ contaCons Nil = 0
 contaCons (Cons _ s) = 1 + contaCons s
 contaCons (App s1 s2) = contaCons s1 + contaCons s2
 
+-- ----------------  <<1,7,5,3>>
+
+instance Show a => Show (Seq a) where
+  show x = "<<" ++ mostra x ++ ">>"
+
+mostra :: Show a => Seq a -> String
+mostra Nil = ""
+mostra (Cons x Nil) = show x
+mostra (Cons x s)   = show x ++ "," ++ mostra s
+mostra (App s1 s2)  = mostra s1 ++ "," ++ mostra s2
+
 
 {-
 5. Considere a sequinte definição para representar matrizes: type Mat a = [[a]]
@@ -129,3 +144,12 @@ O exemplo acima é um quadrado mágico com constante 15.
 Defina a função magic :: Mat Int -> Bool que verifica se uma matriz quadrada é um quadradro mágico.
 Será valorizada a utilização de funções de ordem superior.
 -}
+
+type Mat a = [[a]]
+
+getElem :: Mat a -> IO a
+getElem mat = do
+    let (linhas,colunas) = (length mat, length (head mat))
+    randLine <- randomRIO (0,linhas - 1)
+    randRow <- randomRIO (0,colunas - 1)
+    return $ (mat !! randLine) !! randRow
