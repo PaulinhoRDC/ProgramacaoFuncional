@@ -2,6 +2,10 @@ module Teste1920 where
 
 import  Data.Char
 
+import System.Random
+import System.IO
+import System.IO.Error
+
 {-
 1. Apresente uma definição recursiva de cada uma das seguintes funções (pré-definidas) sobre listas:
 
@@ -11,6 +15,23 @@ import  Data.Char
 (b) tails :: [a] -> [[a]] que calcula a lista dos sufixos de uma lista.
  Por exemplo, tails [1,2,3] corresponde a [[1,2,3],[2,3],[3],[]].
 -}
+
+intersect :: Eq a => [a] -> [a] -> [a]
+intersect [] _ = []
+intersect _ [] = []
+intersect (x:xs) l = if (x `elem` l) then x: (intersect xs l)
+                                     else intersect xs l
+
+-- OU
+
+intersect' :: Eq a => [a] -> [a] -> [a]
+intersect' l l2 = foldr (\x acc -> if x `elem` l2 then x:acc else acc) [] l
+
+-- --------------
+
+tails :: [a] -> [[a]]
+tails [] = [[]]
+tails l = [l] ++ tails(tail l)
 
 {-
 2. Para armazenar conjuntos de números inteiros, optou-se pelo uso de sequências de intervalos.
@@ -23,8 +44,36 @@ Assim, por exemplo, o conjunto {1,2,3,4,7,8,19,21,22,23} poderia ser representad
 
 (b) Defina uma função geraconj :: [Int] -> ConjInt que recebe uma lista de inteiros,
 ordenada por ordem crescente e sem repetições, e gera um conjunto.
-    Por exemplo, geraconj [1,2,3,4,7,8,19, 21,22,23] = [(1,4),(7,8),(19,19),(21,23)].
+    Por exemplo, geraconj [1,2,3,4,7,8,19,21,22,23] = [(1,4),(7,8),(19,19),(21,23)].
 -}
+
+type ConjInt = [Intervalo]
+type Intervalo = (Int,Int)
+
+elems :: ConjInt -> [Int]
+elems [] = []
+elems ((x,x2):t) | (x<x2)    = x: elems ((x+1,x2):t)
+                 | otherwise = x: elems t
+
+-- --------------
+
+geraconj :: [Int] -> ConjInt
+geraconj [] = []
+geraconj l = enquantoCrescente l (head l) (last l)
+
+enquantoCrescente :: [Int] -> Int -> Int  -> ConjInt
+enquantoCrescente [] x y       = []
+enquantoCrescente [n] x y      = [(n,n)]
+enquantoCrescente (n:n2:t) x y |(n==(n2-1)) = enquantoCrescente (n2:t) x n2
+                               |otherwise   = [(x,y)] ++ enquantoCrescente (n2:t) n2 (last t)
+
+-- OU
+
+geraconj' :: [Int] -> ConjInt
+geraconj' [] = []
+geraconj' (h : t) = (h, d) : geraconj (dropWhile (<= d) t)
+    where d = foldl (\acc x -> if x == succ acc then x else acc) h t
+
 
 {-
 3. Para armazenar uma agenda de contactos telefónicos e de correio electrónico definiram-se os seguintes tipos de dados.
@@ -51,6 +100,68 @@ Implemente a função de modo a fazer uma única travessia da lista de contactos
 (d) Defina a função consultaIO :: Agenda -> IO () que, dada uma agenda,
 lê do teclado o nome que pretende consultar e apresenta no ecrã os contactos associados a esse nome na agenda.
 -}
+
+data Contacto = Casa Integer
+              | Trab Integer
+              | Tlm Integer
+              | Email String
+      deriving (Show)
+
+type Nome = String
+type Agenda = [(Nome, [Contacto])]
+
+agenda1 = [("Sofia", [Casa 123456789, Tlm 987654321, Email "abc@def.ghi", Email "f@mendess.xyz"]),("Luís", [Tlm 69420]),("Rita", [Trab 58008])]
+
+contacto1 = [Casa 123456789, Tlm 987654321, Email "abc@def.ghi", Email "f@mendess.xyz", Tlm 69420, Trab 58008]
+
+
+acrescEmail :: Nome -> String -> Agenda -> Agenda
+acrescEmail nome e [] = [(nome, [Email e])]
+acrescEmail nome e agenda@((nomeX, contactos) : t)
+                          | (nome == nomeX) = (nome, (Email e): contactos) : t
+                          | otherwise       = head agenda : acrescEmail nome e t
+
+-- -----------------
+
+verEmails :: Nome -> Agenda -> Maybe [String]
+verEmails n [] = Nothing
+verEmails n ((x,l):xs) | (n==x) = Just (daListaStr l)
+                       | otherwise = verEmails n xs
+
+daListaStr :: [Contacto] -> [String]
+daListaStr [] = []
+daListaStr (h:t) = case h of Email s -> s: daListaStr t
+                             _ -> daListaStr t
+
+-- -----------------
+
+consulta :: [Contacto] -> ([Integer],[String])
+consulta = foldr (\x (i,s) -> case x of Email email -> (i,email:s); otherwise -> (n x:i,s)) ([],[])
+    where n x = case x of Casa num -> num
+                          Trab num -> num
+                          Tlm num -> num
+
+-- OU
+
+consTelefs :: [Contacto] -> ([Integer],[String])
+consTelefs [] = ([],[])
+consTelefs (h:t) = case h of Casa s  -> (s :a , b)
+                             Trab s  -> (s :a , b)
+                             Tlm s   -> (s :a , b)
+                             Email s -> (a , s :b)
+              where (a,b) = consTelefs t
+
+-- -----------------
+
+consultaIO :: Agenda -> IO ()
+consultaIO agenda = do nome <- getLine
+                       let contactos = aux nome agenda
+                       putStr (concat [show x ++ "\n" | x <- contactos])
+
+              where aux _ [] = []
+                    aux nome ((name,contactos):t) = if (name == nome) then contactos else aux nome t
+
+
 
 {-
 4. Relembre o tipo RTree a definido nas aulas.
