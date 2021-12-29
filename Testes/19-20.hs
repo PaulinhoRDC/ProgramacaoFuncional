@@ -186,4 +186,11 @@ paths (R a outras) = [a: x | x <- concat [paths branch | branch <- outras]]
 
 unpaths :: Eq a => [[a]] -> RTree a
 unpaths [[x]] = R x []
-unpaths ((x:xs):t) = R x [unpaths [xs]] -- ++ "," ++ (unpaths t)
+unpaths l@((x:_):_) = R x (map unpaths l'')
+     where l'  = map tail l                           -- Para ir buscar o elemento que é cabeça de todas as listas
+           l'' = agrupa (\(x:_) (y:_) -> x==y) l'     -- Agrupar quais das subárvores começam pelo mesmo valor
+
+agrupa :: Eq a => [[a]] -> [[[a]]]
+agrupa [] = []
+agrupa ((x:xs):t) = ((x:xs):l1) : agrupa l2
+    where (l1,l2) = span (\(y:_)->x==y) t
