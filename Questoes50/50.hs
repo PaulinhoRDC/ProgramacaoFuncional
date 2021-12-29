@@ -357,10 +357,9 @@ Por exemplo, (\\)[1,2,3,4,5,1] [1,5] corresponde a [2,3,4,1].
 -}
 
 remPrimOcorr :: Eq a => [a] -> [a] -> [a]
-remPrimOcorr [] _ = []
 remPrimOcorr l [] = l
-remPrimOcorr (h:t) (h2:t2) | (h==h2) = remPrimOcorr t t2
-                           | otherwise = h: remPrimOcorr t (h2:t2)
+remPrimOcorr [] _ = []
+remPrimOcorr l (x:xs) = remPrimOcorr (delete' x l) xs
 
 {-
 29. Apresente uma definição recursiva da função (pré-definida) union :: Eq a => [a] -> [a] -> [a]
