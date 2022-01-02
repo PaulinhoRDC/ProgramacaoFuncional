@@ -58,9 +58,9 @@ seguinte definição
 -}
 
 instance Num Frac where
-    (F a b) + (F c d) = F (a*d + c*b) (b*d)
+    (F a b) + (F c d) = F (a*d + c*b) (b*d)     -- (+)
     x - y = x + negate y                        -- (-)
-    (F a b) * (F c d) = F (a * c) (b * d)
+    (F a b) * (F c d) = F (a * c) (b * d)       -- (*)
 
     negate (F a b) = F (-a) b
     abs (F a b) = F (abs a) (abs b)
@@ -124,7 +124,23 @@ instance (Num a,Eq a) => Eq (Exp a) where
 (c) Declare Exp a como instância da classe Num.
 -}
 
---FALTAAAAA
+instance (Num a, Eq a) => Num (Exp a) where
+
+    (+) = Mais
+    (-) = Menos
+    (*) = Mult
+
+    -- abs :: Num a => Exp a -> Exp a
+    abs e | (calcula e >= 0) = e
+          | otherwise = Simetrico e
+
+    -- signum :: Num a => Exp a -> Exp a
+    signum e |calcula e == 0 = Const 0
+             |calcula e > 0  = Const 1
+             |calcula e < 0  = Const (-1)
+
+    -- fromInteger :: Num a => Integer -> Exp a
+    fromInteger n = Const (fromInteger n)
 
 {-
 3. Relembre o exercício da Ficha 3 sobre contas bancárias, com a seguinte declaração de tipos

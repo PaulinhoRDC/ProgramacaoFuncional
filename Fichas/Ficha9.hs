@@ -102,7 +102,7 @@ valida :: Aposta -> Bool
 valida (Ap l (a,b)) = (1<= a && a<=9) && (1<=b && b<=9)  && (a/=b) && (validaNums l && length l == 5)
 
 validaNums :: [Int] -> Bool
-validaNums (x:xs) = (1<=x && 1<=50) && not (elem x xs) && validaNums xs
+validaNums (x:xs) = (1<=x && x<=50) && not (elem x xs) && validaNums xs
 validaNums [] = True
 
 {-
@@ -119,14 +119,14 @@ numComs (x:xs) l = if x `elem` l
                    else numComs xs l
 numComs [] _ = 0
 
--- Ou em ordem superior : (FOLDR) ->   numComs l1 l2 = foldr (\x r-> if x `elem` l1 then 1+r else r) 0 l2
+-- Ou em ordem superior : (FOLDR) ->   numComs l1 l2 = foldr (\x r-> if x `elem` l2 then 1+r else r) 0 l1
 
 {-
 (c) Use a função da alínea anterior para:
 
 i. Definir Aposta como instância da classe Eq.
 
-ii. Definir a função premio :: Aposta -> Aposta -> Maybe Int que dada uma aposta e a chave do concurso,
+ii. Definir a função premio :: Aposta -> Aposta -> Maybe Int ,que dada uma aposta e a chave do concurso,
 indica qual o prémio que a aposta tem.
 Os prémios do EuroMilhões são:
 
@@ -174,7 +174,7 @@ leAposta = do putStr "Lista de números (1..50): "
               let ap = Ap (read l) (read s)    -- read :: Read a => String -> a
               if valida ap
               then return ap
-              else do putStrLn "inválida"      -- >> significa faz a ação e depois a outra
+              else do putStrLn "Inválida"      -- >> significa faz a ação e depois a outra
                       leAposta                 -- mesmo que, putStrLn "Inválida" >> leAposta
 
 -- (ii)

@@ -14,7 +14,7 @@ ou no Data.List:
 any' :: (a -> Bool) -> [a] -> Bool
 any' p [] = False
 any' p (x:xs) = if (p x) then True
-                        else any' p xs
+                         else any' p xs
 
 -- OU
 any2 p l = elem True (map p l)
@@ -192,6 +192,11 @@ produto' [] l = l
 
 --OU
 produto p1 p2 = foldl (\ac x -> soma (mult x p2) ac) [] p1
+
+--OU
+
+produto2 p1 p2 = foldr (\x ac -> soma (mult x p2) ac) [] p1
+
 
 -- (l) equiv :: Polinomio -> Polinomio -> Bool que testa se dois polinómios são equivalentes.
 

@@ -95,12 +95,12 @@ prune 1 (R x l) = (R x [])
 prune n (R x l)
           |(n>1) = ( R x (map (prune (n-1)) l) )
 
--- (d) mirror :: RTree a -> RTree a que gera a árvore simétrica.
+-- (d) mirror :: RTree a -> RTree a ,que gera a árvore simétrica.
 
 mirror :: RTree a -> RTree a
 mirror (R x l) = R x (reverse (map mirror l))
 
--- (e) postorder :: RTree a -> [a] que corresponde à travessia postorder da árvore.
+-- (e) postorder :: RTree a -> [a] ,que corresponde à travessia postorder da árvore.
 
 postorder :: RTree a -> [a]
 postorder (R x l) = concat (map postorder l) ++ [x]
@@ -137,7 +137,7 @@ listaLT :: LTree a -> [a]
 listaLT (Tip n) = [n]
 listaLT (Fork a b) = listaLT a ++ listaLT b
 
--- (c) ltHeight :: LTree a -> Int que calcula a altura de uma árvore.
+-- (c) ltHeight :: LTree a -> Int ,que calcula a altura de uma árvore.
 
 ltHeight :: LTree a -> Int
 ltHeight (Tip a) = 1
@@ -156,7 +156,7 @@ folhas (note que o tipo da informação nos nodos e nas folhas não tem que ser 
 data FTree a b = Leaf b | No a (FTree a b) (FTree a b)
 
 
--- (a) Defina a função splitFTree :: FTree a b -> (BTree a, LTree b) que separa
+-- (a) Defina a função splitFTree :: FTree a b -> (BTree a, LTree b) ,que separa
 -- uma árvore com informação nos nodos e nas folhas em duas árvores de tipos
 -- diferentes.
 

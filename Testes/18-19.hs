@@ -152,4 +152,4 @@ getElem mat = do
     let (linhas,colunas) = (length mat, length (head mat))
     randLine <- randomRIO (0,linhas - 1)
     randRow <- randomRIO (0,colunas - 1)
-    return $ (mat !! randLine) !! randRow
+    return $ (mat !! randLine) !! randRow         -- return ((mat !! randLine) !! randRow)
