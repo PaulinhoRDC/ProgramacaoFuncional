@@ -93,6 +93,8 @@ zip' l [] = []
 zip' [] l = []
 zip' (h:t) (h2:t2) = (h,h2) : zip' t t2
 
+-- AO INVÉS DAQUELES 3 CASOS, PODÍAMOS COLOCAR NO FIM, APENAS UM CASO : zip' _ _ = []
+
 {-
 9. Apresente uma definição recursiva da função (pré-definida) replicate :: Int -> a -> [a]
 que dado um inteiro n e um elemento x constrói uma lista com n elementos, todos iguais a x.
@@ -393,10 +395,10 @@ Por exemplo, insert 25 [1,20,30,40] corresponde a [1,20,25,30,40].
 -}
 
 insert' :: Ord a => a -> [a] -> [a]
-insert' n [] = [n]
-insert' n (h:t) = if (n < h)
-  then n: h: t
-  else h: insert' n t
+insert' x [] = [x]
+insert' x (h:t) = if (x < h)
+  then x: h: t
+  else h: insert' x t
 
 {-
 32. Apresente uma definição recursiva da função (pré-definida) unwords :: [String] -> String
@@ -416,7 +418,7 @@ Por exemplo, unlines' ["Prog", "Func"] corresponde a "Prog\nFunc\n".
 
 unlines' :: [String] -> String
 unlines' [] = ""
-unlines' (x:xs) = x ++ "\n" ++  unlines' xs
+unlines' (x:xs) = x ++ (if null xs then "" else "\n") ++  unlines' xs
 
 {-
 34. Apresente uma definição recursiva da função pMaior :: Ord a => [a] -> Int
@@ -431,7 +433,7 @@ pMaior (h:t)
     | otherwise = 1 + x
     where x = pMaior t
 
--- OU
+-- OU   (Com acumulador, e muito maior facilidade de leitura)
 
 pMaior' :: Ord a => [a] -> Int                    -- [3,4,6,5] -> 2
 pMaior' [x] = 0
