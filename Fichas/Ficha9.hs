@@ -66,7 +66,7 @@ getKey = do a <- randomRIO (0,9)
 
 getGuess :: IO (Int,Int,Int,Int)
 getGuess = do x <- getLine
-              if length x /= 4 || not $ all isDigit x
+              if length x /= 4 || (not (all isDigit x))
               then getGuess
               else return (let (a:b:c:d:resto) = x in (read [a],read [b],read [c],read [d]))
 
@@ -111,7 +111,7 @@ calcula quantos números e quantas estrelas existem em comum nas duas apostas.
 -}
 
 comuns :: Aposta -> Aposta -> (Int,Int)
-comuns (Ap ns (a,b)) (Ap xs (c,d)) = (numComs ns xs, numComs [a,b] [c,d])
+comuns (Ap ns (a,b)) (Ap xs (c,d)) = (numComs' ns xs, numComs' [a,b] [c,d])
 
 numComs :: [Int] -> [Int] -> Int
 numComs (x:xs) l = if x `elem` l
@@ -119,7 +119,9 @@ numComs (x:xs) l = if x `elem` l
                    else numComs xs l
 numComs [] _ = 0
 
--- Ou em ordem superior : (FOLDR) ->   numComs l1 l2 = foldr (\x r-> if x `elem` l2 then 1+r else r) 0 l1
+-- Ou em ordem superior : (FOLDR) !!!
+
+numComs' l1 l2 = foldr (\x r-> if x `elem` l2 then 1+r else r) 0 l1
 
 {-
 (c) Use a função da alínea anterior para:
@@ -130,14 +132,14 @@ ii. Definir a função premio :: Aposta -> Aposta -> Maybe Int ,que dada uma apo
 indica qual o prémio que a aposta tem.
 Os prémios do EuroMilhões são:
 
-Números Estrelas Prémio   Números Estrelas Prémio
-  5       2        1        3         2       7
-  5       1        2        2         2       8
-  5       0        3        3         1       9
-  4       2        4        3         0      10
-  4       1        5        1         2      11
-  4       0        6        2         1      12
-                            2         0      13
+                                Números Estrelas Prémio   Números Estrelas Prémio
+                                  5       2        1        3         2       7
+                                  5       1        2        2         2       8
+                                  5       0        3        3         1       9
+                                  4       2        4        3         0      10
+                                  4       1        5        1         2      11
+                                  4       0        6        2         1      12
+                                                            2         0      13
 -}
 
 -- (i)
@@ -173,7 +175,7 @@ leAposta = do putStr "Lista de números (1..50): "
               s <- getLine
               let ap = Ap (read l) (read s)    -- read :: Read a => String -> a
               if valida ap
-              then return ap
+              then return ap                                                                -- return :: a -> IO a
               else do putStrLn "Inválida"      -- >> significa faz a ação e depois a outra
                       leAposta                 -- mesmo que, putStrLn "Inválida" >> leAposta
 

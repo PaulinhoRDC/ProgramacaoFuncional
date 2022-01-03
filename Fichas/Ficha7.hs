@@ -32,7 +32,7 @@ calcula (Mais e1 e2) = (calcula e1) + (calcula e2)
 calcula (Menos e1 e2) = (calcula e1) - (calcula e2)
 calcula (Mult e1 e2) = (calcula e1) * (calcula e2)
 
--- (b) Defina uma função infixa :: ExpInt -> String de forma a que
+-- (b) Defina uma função infixa :: ExpInt -> String ,de forma a que
 -- infixa (Mais (Const 3) (Menos (Const 2) (Const 5))) dê como resultado "(3 + (2 - 5))".
 
 infixa :: ExpInt -> String
@@ -144,7 +144,6 @@ ltHeight (Tip a) = 1
 ltHeight (Fork a1 a2) = 1 + max (ltHeight a1)(ltHeight a2)
 
 {-
-
 4. Estes dois conceitos podem ser agrupados num só, definindo o seguinte tipo:
 
             data FTree a b = Leaf b | No a (FTree a b) (FTree a b)

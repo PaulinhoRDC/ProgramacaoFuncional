@@ -81,7 +81,7 @@ minimo :: Ord a => BTree a -> a
 minimo (Node r Empty _ ) = r
 minimo (Node r e _) = minimo e
 
--- (b) Defina uma função semMinimo :: Ord a => BTree a -> BTree a que remove o menor elemento de uma árvore bin´aria de procura não vazia.
+-- (b) Defina uma função semMinimo :: Ord a => BTree a -> BTree a que remove o menor elemento de uma árvore binária de procura não vazia.
 
 semMinimo :: Ord a => BTree a -> BTree a
 semMinimo (Node r Empty d) = d
@@ -107,7 +107,7 @@ remove x (Node e l r)
     | otherwise = case l of Empty -> r
                             _ -> case r of Empty -> l
                                            _ -> Node g l h
-    where (g,h) = minSmin r                                     --VERIFICAR MÉTODO USADO AULA
+    where (g,h) = minSmin r                                     
 
 {-
  Nesta função, depois de remover o elemento, temos de formar uma nova árvore, pois não podemos ter um nodo vazio.

@@ -87,8 +87,6 @@ maioresQueDobro f l = filter ((>) (2 * f)) l
                                         | Mais (Exp a) (Exp a)
                                         | Menos (Exp a) (Exp a)
                                         | Mult (Exp a) (Exp a)
-
-(a) Declare Exp a como uma instância de Show.
 -}
 
 data Exp a = Const a
@@ -97,6 +95,9 @@ data Exp a = Const a
             | Menos (Exp a) (Exp a)
             | Mult (Exp a) (Exp a)
 
+{-
+(a) Declare Exp a como uma instância de Show.
+-}
 
 instance Show a => Show (Exp a) where
     show (Const a) = show a
@@ -124,7 +125,7 @@ instance (Num a,Eq a) => Eq (Exp a) where
 (c) Declare Exp a como instância da classe Num.
 -}
 
-instance (Num a, Eq a) => Num (Exp a) where
+instance (Num a, Ord a) => Num (Exp a) where
 
     (+) = Mais
     (-) = Menos
@@ -148,13 +149,15 @@ instance (Num a, Eq a) => Num (Exp a) where
                         data Movimento = Credito Float | Debito Float
                         data Data = D Int Int Int
                         data Extracto = Ext Float [(Data, String, Movimento)]
-
-(a) Defina Data como instância da classe Ord.
 -}
 
 data Movimento = Credito Float | Debito Float
 data Data = D Int Int Int
 data Extracto = Ext Float [(Data, String, Movimento)]
+
+{-
+(a) Defina Data como instância da classe Ord.
+-}
 
 instance Ord Data where
     compare (D dia1 mes1 ano1) (D dia2 mes2 ano2)
