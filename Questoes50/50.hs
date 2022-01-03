@@ -388,6 +388,10 @@ intersect' [] _ = []
 intersect' (h:t) l |(elem h l) = h: intersect' t l
                    |otherwise = intersect' t l
 
+
+intersect'' :: Eq a => [a] -> [a] -> [a]
+intersect'' l l2 = foldr (\x acc -> if x `elem` l2 then x:acc else acc) [] l
+
 {-
 31. Apresente uma definição recursiva da função (pré-definida) insert :: Ord a => a -> [a] -> [a]
 que dado um elemento e uma lista ordenada retorna a lista resultante de inserir ordenadamente esse elemento na lista.

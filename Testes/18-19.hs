@@ -38,7 +38,7 @@ isSubsequenceOf _ [] = False
 2. Considere o seguinte tipo para representar árvores binárias.
                       data BTree a = Empty | Node a (BTree a) (BTree a)
 
-(a)Defina a função  lookupAP :: Ord a => a-> BTree (a,b)-> Maybe b que generaliza a função
+(a)Defina a função  lookupAP :: Ord a => a-> BTree (a,b)-> Maybe b ,que generaliza a função
 lookup para árvores binárias de procura.
 
 (b) Defina a função zipWithBT :: (a -> b -> c) -> BTree a -> BTree b -> BTree c que generaliza a função zipWith para árvores binárias.

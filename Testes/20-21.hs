@@ -65,17 +65,12 @@ auxfc (x,y) (lx,sy) = (x:lx, y+sy)
 Por exemplo, partes "um;bom;exemplo;" ’;’ == ["um","bom","exemplo"] e partes "um;exemplo;qualquer" ’;’ == ["um","exemplo","qualquer"].
 -}
 
-partes :: String -> Char -> [String]
-partes "" x = []
-partes l  x = pri : partes (drop len l) x
-    where pri = part1 l x
-          len = (length pri )+ 1
-
-part1 :: String -> Char -> String
-part1  ""   x = ""
-part1 (h:t) x = if x == h
-                then ""
-                else h: part1 t x   --"ola;sou;o;rubik" ';' -> "ola"
+partes' :: String -> Char -> [String]
+partes' "" _ = []
+partes' s c = let (p,r) = span (/= c) s
+              in case r of
+                [] -> [p]
+                x:xs -> p : partes' xs c
 
 {-
 4. Considere o seguinte tipo para representar árvores binárias de procura.
