@@ -1,4 +1,4 @@
-module Exame1920 where
+module Exame1718 where
 
 import  Data.Char
 import System.Random
@@ -88,7 +88,7 @@ maior (Juntar imgs) | null imgs = Nothing
 -- ----------- c)
 
 instance Eq Imagem where
-    img1 == img2 = null $ (quadPos img1 (0,0)) \\ (quadPos img2 (0,0))
+    img1 == img2 = null $ (quadPos img1 (0,0)) `\\` (quadPos img2 (0,0))
 
 quadPos :: Imagem -> (Int,Int) -> [(Int,(Int,Int))]
 quadPos (Quadrado n) pos = [(n,pos)]
