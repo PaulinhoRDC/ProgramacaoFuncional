@@ -47,7 +47,7 @@ por exemplo: dropWhile odd [1,3,4,5,6,6] == [4,5,6,6].
 
 dropWhile' :: (a->Bool) -> [a] -> [a]
 dropWhile' f (x:xs) | (f x) = dropWhile' f xs
-                    | otherwise = xs
+                    | otherwise = x:xs
 
 {-
 (e) span :: (a -> Bool) -> [a] -> ([a],[a]), que calcula simultaneamente os
@@ -74,7 +74,7 @@ que é passada como parâmetro.
 
 deleteBy' :: (a -> a -> Bool) -> a -> [a] -> [a]
 deleteBy' f x (h:t) | f x h = t
-                   | otherwise = h: deleteBy' f x t
+                    | otherwise = h: deleteBy' f x t
 
 {-
 g) sortOn :: Ord b => (a -> b) -> [a] -> [a]

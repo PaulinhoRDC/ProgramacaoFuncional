@@ -20,6 +20,10 @@ digitAlpha (x:xs)
         | otherwise = (a,b)
     where (a,b) = digitAlpha xs
 
+digitAlpha' :: String -> (String,String)
+digitAlpha' l = foldr (\x (ds,as) -> if isDigit x then (x:ds,as) else if isAlpha x then (ds,x:as) else (ds,as)) ([],[]) l
+
+
 {-
 
 2. Defina a função nzp :: [Int] -> (Int,Int,Int) que, dada uma lista de inteiros,
