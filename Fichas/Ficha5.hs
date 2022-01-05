@@ -28,7 +28,7 @@ b) zipWith :: (a->b->c) -> [a] -> [b] -> [c] que combina os elementos de duas li
 -}
 
 zipWith' :: (a->b->c) -> [a] -> [b] -> [c]
-zipWith' f (a:as) (b:bs) = f a b : zipWith' f as bs
+zipWith' f (a:as) (b:bs) = f a b : zipWith' f as bs 
 zipWith' _ _ _ = []                                -- caso em que não se deve fazer a função (podia fazer separados casos)
 
 {-
@@ -273,7 +273,7 @@ addMat' m1 m2 = zipWMat (+) m1 m2
 --que testa se uma matriz quadrada é triangular superior (i.e., todos os elementos abaixo da diagonal são nulos).
 
 triSup :: Real a => Mat a -> Bool
-triSup = snd . foldl (\(ac1,ac2) line -> (ac1+1, all (== 0) (take ac1 line) && ac2)) (0,True) 
+triSup = snd . foldl (\(ac1,ac2) line -> (ac1+1, all (== 0) (take ac1 line) && ac2)) (0,True)
 
 -- (h) rotateLeft :: Mat a -> Mat a ,que roda uma matriz 90º para a esquerda.
 --Por exemplo, o resultado de rodar a matriz acima apresentada deve corresponder à matriz:
