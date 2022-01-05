@@ -148,7 +148,7 @@ Por exemplo, dirFiles fs1 ["usr","xxx"] == Just ["abc.txt","readme"]
 (c) Defina a função listaFich :: FileSystem -> IO ()
 que lê uma path do teclado e imprime no ecrã os nomes dos ficheiros que estão na diretoria indicada pela path.
 A path deve ser lida como uma string com o formato usual (por exemplo: ”usr/xxx/PF”).
-Se a path não for v ́alida, deve ser escrita a mensagem ”Não é uma directoria.”
+Se a path não for válida, deve ser escrita a mensagem ”Não é uma directoria.”
 -}
 
 data FileSystem = File Nome | Dir Nome [FileSystem]
@@ -157,11 +157,16 @@ type Nome = String
 fs1 = Dir "usr" [Dir "xxx" [File "abc.txt", File "readme", Dir "PF" [File "exemplo.hs"]],
                  Dir "yyy" [],  Dir "zzz" [Dir "tmp" [], File "teste.c"] ]
 
+-- ------------- a)
+
+
 fichs :: FileSystem -> [Nome]
 fichs (File n) = [n]
 fichs (Dir n l) = (concat (map fichs l)) -- OU -- concat $ map fich l
 
--- -------------
+-- ------------- b)
+
+--dirFiles fs1 ["usr","xxx"] == Just ["abc.txt","readme"]
 
 dirFiles :: FileSystem -> [Nome] -> Maybe [Nome]
 dirFiles f [] = Nothing
@@ -178,24 +183,26 @@ dirFiles (Dir x l)(h:t) = if x /= h
     where rf = [dirFiles fi  t | fi <- l]
           --rf = [Nothing,Just [nomeasdasdasm],Nothing,Nothgin]
 
-aux :: [Maybe a] -> [a]
-aux [] = []
-aux (Nothing :t) = aux t
-aux ((Just x):t) = x: aux t
 
 fi3 :: [FileSystem] -> [Nome]
 fi3 [] = []
 fi3  ((Dir x l):t) = fi3 t
 fi3 ((File nome):t) = nome: fi3 t
 
--- ------------------
+aux :: [Maybe a] -> [a]
+aux [] = []
+aux (Nothing :t) = aux t
+aux ((Just x):t) = x: aux t
+
+
+-- ------------------c)
 
 listaFich :: FileSystem -> IO ()
 listaFich fs = do
     putStrLn "dá me uma diretoria"
     path <- getLine
-    if dirFiles fs (partes path '/') == Nothing
-        then do putStr "não é diretoria"
-    else putStrLn $ unwords $ f $ dirFiles fs (partes path '/')
+    if dirFiles fs (partes' path '/') == Nothing
+        then do putStr "Não é diretoria"
+        else putStrLn ( unwords ( f (dirFiles fs (partes' path '/') )))
 
 f (Just x) = x
