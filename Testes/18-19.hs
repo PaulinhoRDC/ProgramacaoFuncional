@@ -1,6 +1,6 @@
 module Teste1819 where
 
-import  Data.Char
+import Data.Char
 
 import System.Random
 import System.IO
@@ -158,3 +158,22 @@ getElem mat = do
 
 
 -- --------b)
+
+magic :: Mat Int -> Bool
+magic m = let somaLinhas = map sum m
+              somaColunas = map sum (transpose m)
+          in length(nub [sum(diagonal1 m), sum(diagonal2 m)] ++ somaLinhas ++ somaColunas) == 1
+
+diagonal1 :: Mat Int -> [Int]
+diagonal1 m = diaA 0 m
+    where diaA i [] = []
+          diaA i (h:t) = (h!!i): diaA (i+1) t
+
+-- diagonal1 m = zipWith (!!) m [0..]
+
+diagonal2 :: Mat Int -> [Int]
+diagonal2 m = diaA ((length m)-1) m
+    where diaA i [] = []
+          diaA i (h:t) = (h!!i): diaA (i-1) t
+
+-- diagonal2 m = diagonal1 (reverse m)

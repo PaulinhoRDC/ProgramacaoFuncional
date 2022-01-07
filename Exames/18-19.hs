@@ -124,14 +124,19 @@ convLP :: RelL a -> RelP a
 convLP l = concat (map junta l)
     where junta (x,xs) = map (\y->(x,y)) xs
 
+-- ------------a)
 
 convPL :: (Eq a) => RelP a -> RelL a
-convPL [(x,y)] = [(x,[y])]
-convPL (h:t) = junta h (convPL t)
-      where junta (a,b) l = if a `elem` map (fst) l
-                        then map (\(c,d) -> if c == a then (c,b:d) else (c,d)) l
-                        else (a,[b]):l
+convPL [] = []
+convPL ((x,y):t)= let (l,r)= filtra x t
+                  in (x,y:l): convPL r
 
+filtra :: (Eq a) => a -> RelP a -> ([a], RelP a)
+filtra _ [] = ([],[])
+filtra x ((a:b):t) = if (x==a) then (b:l,r)
+                               else (l,(a,b):r)
+
+-- ------------b)
 
 criaRelPint :: Int -> IO (RelP Int)
 criaRelPint 0 = return []
@@ -140,11 +145,16 @@ criaRelPint n = do   putStr "Introduz dois numeros (separados por um espaco): "
                      l <- criaRelPint (n-1)
                      return (read par : l)    -- Preciso usar um read "(2,3)" :: (Int,Int)
 
+-- ------------c)
+
+-- ------i)
 
 convFP :: (Eq a) => RelF a -> RelP a
-convFP (l,f) = convLP $ map (\x -> (x,f x)) l
+convFP (l,f) = convLP (map (\x -> (x,f x)) l)
+
+-- ------ii)
 
 convPF :: (Eq a) => RelP a -> RelF a
-convPF x = ((map fst y),f)
-    where y = convPL x
-          f a = foldl (\acc (b,c) -> if a == b then c else acc) [] y
+convPF l = ((nub (map fst l)), f l)
+    where f :: RelP a -> a -> [a]
+          f l x = map snd (filter (\(y,_) -> y==x) l)

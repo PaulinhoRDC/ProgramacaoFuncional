@@ -159,7 +159,6 @@ fs1 = Dir "usr" [Dir "xxx" [File "abc.txt", File "readme", Dir "PF" [File "exemp
 
 -- ------------- a)
 
-
 fichs :: FileSystem -> [Nome]
 fichs (File n) = [n]
 fichs (Dir n l) = (concat (map fichs l)) -- OU -- concat $ map fich l
@@ -169,32 +168,17 @@ fichs (Dir n l) = (concat (map fichs l)) -- OU -- concat $ map fich l
 --dirFiles fs1 ["usr","xxx"] == Just ["abc.txt","readme"]
 
 dirFiles :: FileSystem -> [Nome] -> Maybe [Nome]
-dirFiles f [] = Nothing
-dirFiles (File n) (h:t) = Nothing
+dirFiles fs [] = Just (fichs fs)
+dirFiles (File _) (h:t) = Nothing
+dirFiles (Dir x l) (h:t) |(x==h) = dirFilesAux l t
+                         |otherwise = Nothing
 
-dirFiles (Dir x l) [z] = if x == z
-                         then Just (fi3 l)
-                         else Nothing
-
-dirFiles (Dir x l)(h:t) = if x /= h
-                          then Nothing
-                          else Just $ concat (aux rf)    -- OU -- (Just (concat (aux rf)))
-
-    where rf = [dirFiles fi  t | fi <- l]
-          --rf = [Nothing,Just [nomeasdasdasm],Nothing,Nothgin]
-
-
-fi3 :: [FileSystem] -> [Nome]
-fi3 [] = []
-fi3  ((Dir x l):t) = fi3 t
-fi3 ((File nome):t) = nome: fi3 t
-
-aux :: [Maybe a] -> [a]
-aux [] = []
-aux (Nothing :t) = aux t
-aux ((Just x):t) = x: aux t
-
-
+dirFilesAux :: [FileSystem] -> [Nome] -> Maybe [Nome]
+dirFilesAux [] (_:_) = Nothing
+dirFilesAux lfs [] = Just (concat (map fichs lfs))
+dirFilesAux ((File _): fs) (n:ns) = dirFilesAux fs (n:ns)
+dirFilesAux ((Dir d l): fs) (n:ns) |(n==d)    = dirFilesAux l ns
+                                   |otherwise = dirFilesAux fs (n:ns)
 -- ------------------c)
 
 listaFich :: FileSystem -> IO ()
