@@ -124,16 +124,6 @@ que agrupa elementos iguais e consecutivos de uma lista.
 Por exemplo, group [1,2,2,3,4,4,4,5,4] corresponde a [[1],[2,2],[3],[4,4,4],[5],[4]].
 -}
 
-group' :: Eq a => [a] -> [[a]]
-group' [] = []
-group' [h] = [[h]]
-group' (h:t)
-    | elem h (head r) = (h : (head r)) : tail r
-    | otherwise = [h] : r
-    where r = group' t
-
---OU
-
 group'' :: Eq a => [a] -> [[a]]
 group'' [] = []
 group'' (h:t) = insere'' h (group'' t)
@@ -188,7 +178,7 @@ heads' (h:t) = head h : heads' t
 {-
 16. Defina a função total :: [[a]] -> Int
 que recebe uma lista de listas e conta o total de elementos (de todas as listas)
-Por exemplo, total [[2,3,4],[1,7],[],[8,5,3]] corresponde a 8.
+Por exemplo, total' [[2,3,4],[1,7],[],[8,5,3]] corresponde a 8.
 -}
 
 total' :: [[a]] -> Int
@@ -240,7 +230,7 @@ powerEnumFrom' n m | m > 1 = powerEnumFrom' n (m-1) ++ [n^(m-1)]
                    | otherwise = []
 
 {-
-21. Apresente uma definiçãoo recursiva da função, isPrime ::  Int -> Bool
+21. Apresente uma definição recursiva da função, isPrime ::  Int -> Bool
 que dado um número inteiro maior ou igual a 2 determina se esse número é primo.
 Para determinar se um número n é primo, descubra se existe algum número inteiro m tal que 2 ≤ m ≤ √n e mod n m = 0.
 Se um tal número não existir então n é primo,e se existir então n não é primo.
@@ -290,14 +280,6 @@ isSuffixOf' [] _ = True
 isSuffixOf' _ [] = False
 isSuffixOf' l1 l2@(_:t) = l1 == l2 || isSuffixOf' l1 t
 
--- OU
-
-isSuffixOf'' :: Eq a => [a] -> [a] -> Bool
-isSuffixOf'' [] _ = True
-isSuffixOf'' l l2
-    | length l > length l2 = False
-    | last l ==  last l2 = isSuffixOf'' (init l) (init l2)
-    | otherwise = False
 
 {-
 24. Apresente uma definição recursiva da função (pré-definida) isSubsequenceOf :: Eq a => [a] -> [a] -> Bool
