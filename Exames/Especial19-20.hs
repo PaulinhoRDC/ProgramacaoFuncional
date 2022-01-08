@@ -149,3 +149,18 @@ avalia lista = do putStrLn "Nome do filme: "
                     else return (filme ++  [ ((n,m,l,b,v),av) | ((n,m,l,b,v),av) <- lista , n/= nomeFilme ] )
 
 -- -------b)
+
+listaPorGeneros :: FilmesAval -> [(Genero,[(Titulo,Avaliacao)])]
+listaPorGeneros l = nub [ t b | ((n,m,l,b,v),av) <- l]
+    where t genero = (genero , [(n,mediaf av) | ((n,m,l,b,v),av) <- l , b == genero] )
+
+mediaf :: [Avaliacao] -> Avaliacao
+mediaf l = if null m
+           then NaoVi
+           else Pontos $ div (sum m) (length l)
+    where m = media l
+
+media :: [Avaliacao] -> [Int]
+media [] = []
+media ((Pontos x):t) = x : media t
+media (NaoVi:t) = media t
