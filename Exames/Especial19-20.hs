@@ -142,11 +142,23 @@ avalia lista = do putStrLn "Nome do filme: "
                   avaliacao <- getLine
 
                   let k = read avaliacao     -- Passar de String para Int
-                      filme = [ ((nome,m,l,n,b),(Pontos k) : av) | ((nome,m,l,n,b),av) <- lista , nome == nomeFilme]
+                      filme = auxF lista nomeFilme k
 
                   if null filme
-                    then return lista
-                    else return (filme ++  [ ((n,m,l,b,v),av) | ((n,m,l,b,v),av) <- lista , n/= nomeFilme ] )
+                      then return lista
+                      else return (filme ++ outrosF lista nomeFilme)
+
+auxF :: FilmesAval -> String -> Int -> FilmesAval
+auxF [] _ _ = []
+auxF (((n,m,l,b,v),av):resto) nome int = if (n==nome)
+    then [((n,m,l,b,v),(Pontos int): av)]
+    else auxF resto nome int
+
+outrosF :: FilmesAval -> String -> FilmesAval
+outrosF [] _ = []
+outrosF (((n,m,l,b,v),av):resto) nome = if (n==nome)
+  then outrosF resto nome
+  else ((n,m,l,b,v),av) : outrosF resto nome
 
 -- -------b)
 
@@ -164,3 +176,10 @@ media :: [Avaliacao] -> [Int]
 media [] = []
 media ((Pontos x):t) = x : media t
 media (NaoVi:t) = media t
+
+
+nub :: Eq a => [a] -> [a]    -- (mantém última ocorrência)
+nub [] = []
+nub (h:t) = if (elem h t)
+  then nub t
+  else h: nub t
