@@ -154,7 +154,7 @@ Se a path não for válida, deve ser escrita a mensagem ”Não é uma directori
 data FileSystem = File Nome | Dir Nome [FileSystem]
 type Nome = String
 
-fs1 = Dir "usr" [Dir "xxx" [File "abc.txt", File "readme", Dir "PF" [File "exemplo.hs"]],
+fs1 = Dir "usr" [Dir "xxx" [File "abc.txt", File "readme", Dir "PF" [File "exemplo.hs",File "exemplo2.hs"]],
                  Dir "yyy" [],  Dir "zzz" [Dir "tmp" [], File "teste.c"] ]
 
 -- ------------- a)

@@ -89,7 +89,7 @@ posicoes tab = [(x,y) | x <- [0..n], y <- [0..n], retira (x,y) tab  == 'R']
     where n = (length tab) - 1
 
 retira :: (Int,Int) -> Tabuleiro -> Char
-retira (x,y) tab = ((tab !! y) !! x)
+retira (x,y) tab = ((tab !! x) !! y)
 
 -- ----b)
 
