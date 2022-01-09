@@ -1,4 +1,4 @@
-module Exame1920 where
+  module Exame1920 where
 
 import  Data.Char
 import System.Random
@@ -135,14 +135,14 @@ quebraLinhas (h:t) m = map (take h) m : quebraLinhas t (map (drop h) m)
 
 -- ---------------- c)
 
-geraLinha :: Int -> (Int, Int) -> IO [Int]
-geraLinha x r |(x==0) = return []
-              |otherwise = do t <- geraLinha (x-1) r
-                              n <- randomRIO r
-                              return (n : t)
-
 geraMat :: (Int,Int) -> (Int,Int) -> IO (Mat Int)
 geraMat (x,y) r |(x==0) = return []
                 |otherwise = do m <- geraMat (x-1,y) r
                                 l <- geraLinha y r
                                 return ( l : m )
+
+geraLinha :: Int -> (Int, Int) -> IO [Int]
+geraLinha x r |(x==0) = return []
+              |otherwise = do t <- geraLinha (x-1) r
+                              n <- randomRIO r
+                              return (n : t)
