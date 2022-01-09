@@ -28,7 +28,7 @@ b) zipWith :: (a->b->c) -> [a] -> [b] -> [c] que combina os elementos de duas li
 -}
 
 zipWith' :: (a->b->c) -> [a] -> [b] -> [c]
-zipWith' f (a:as) (b:bs) = f a b : zipWith' f as bs 
+zipWith' f (a:as) (b:bs) = f a b : zipWith' f as bs
 zipWith' _ _ _ = []                                -- caso em que não se deve fazer a função (podia fazer separados casos)
 
 {-
@@ -284,5 +284,16 @@ triSup = snd . foldl (\(ac1,ac2) line -> (ac1+1, all (== 0) (take ac1 line) && a
       -}
 
 rotateLeft :: Mat a -> Mat a
-rotateLeft m = [ [ map (!! i) m !! j | j <- [0..l-1] ] | i <- [c-1,c-2..0]]
-    where (l,c) = dimMat m
+rotateLeft [] = [[]]
+rotateLeft l@(h:t) = let l2 = map last l
+                         aUsar = ((length h)-1)
+                     in if (aUsar == 0)
+                          then [l2]
+                         else l2: rotateLeft (map (take ((length h)-1)) l)
+
+rotateLeft' :: Mat a -> Mat a
+rotateLeft' m = reverse (transpose' m)
+
+transpose' :: Mat a -> Mat a
+transpose' ([]: _) = []
+transpose' m = (map head m) : transpose' (map tail m)
