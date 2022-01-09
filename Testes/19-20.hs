@@ -177,6 +177,7 @@ tal que, unpaths (paths t) == t, para qualquer árvore t :: Eq a => RTree a.
 data RTree a = R a [RTree a]
       deriving (Show, Eq)
 
+{-
 
 paths :: RTree a -> [[a]]
 paths (R a []) = [[a]]
@@ -194,3 +195,5 @@ agrupa :: Eq a => [[a]] -> [[[a]]]
 agrupa [] = []
 agrupa ((x:xs):t) = ((x:xs):l1) : agrupa l2
     where (l1,l2) = span (\(y:_)->x==y) t
+
+-}
