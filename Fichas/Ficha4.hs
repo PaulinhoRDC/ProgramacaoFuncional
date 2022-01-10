@@ -116,6 +116,7 @@ respectivamente, o n-ésimo e o n+1-ésimo números dessa sequência.
 fib :: Integer -> Integer
 fib n = fibAC n (0,1)
 
+fibAC :: Integer -> (Integer, Integer) -> Integer
 fibAC 0 (a,b) = a
 fibAC 1 (a,b) = b
 fibAC n (a,b) = fibAC (n-1) (b, a+b)

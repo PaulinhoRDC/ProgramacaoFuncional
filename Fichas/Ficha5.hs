@@ -84,10 +84,12 @@ que ordena uma lista comparando os resultados de aplicar uma função de extraç
 
 sortOn' :: Ord b => (a -> b) -> [a] -> [a]
 sortOn' f [] = []
-sortOn' f (h:t) = insere h (sortOn' f t)
-      where insere x [] = [x]
-            insere x (a:b) = if f x > f a then a: insere x b
-                                          else x:a:b
+sortOn' f (h:t) = insere f h (sortOn' f t)
+
+insere :: Ord b => (a->b) -> a -> [a] -> [a]
+insere f x [] = [x]
+insere f x (a:b) = if f x > f a then a: insere f x b
+                                else x:a:b
 
 {-
 2. Relembre a questão sobre polinómios introduzida na Ficha 3, onde um polinómio era
@@ -101,6 +103,9 @@ superior (definidas no Prelude ou no Data.List) em vez de recursividade explíci
 
 type Polinomio = [Monomio]
 type Monomio = (Float,Int)
+
+e1 :: Polinomio
+e1 = [(2,3), (3,4), (5,3), (4,5)]
 
 -- (a) selgrau :: Int -> Polinomio -> Polinomio que selecciona os monómios com um dado grau de um polinómio.
 
@@ -140,6 +145,10 @@ grau ((c,e): t) = max e (grau t)
 
 -- OU
 grau1 l = foldr (\(c,e) r -> max e r) 0 l
+
+-- OU
+
+grau2 l = foldr (\(c,e) r -> if (e>=r) then e else r) 0 l
 
 -- (d) deriv :: Polinomio -> Polinomio que calcula a derivada de um polinómio.
 
@@ -185,10 +194,10 @@ soma p r = normaliza $ (++) p r
 
 -- k) produto :: Polinomio -> Polinomio -> Polinomio que calcula o produto de dois polinómios.
 
-produto :: Polinomio -> Polinomio -> Polinomio
+produto' :: Polinomio -> Polinomio -> Polinomio
 produto' ((c,e): t) ((c2,e2): t2) = (c*c2, e+e2): produto t t2
-produto' l [] = l
-produto' [] l = l
+produto' l [] = []
+produto' [] l = []
 
 --OU
 produto p1 p2 = foldl (\ac x -> soma (mult x p2) ac) [] p1
@@ -227,6 +236,9 @@ m1 = [[1,2,3], [0,4,5], [0,0,6]]
 zeros :: Eq a => Num a => Mat a -> Int
 zeros [] = 0
 zeros (h:t) = (length(filter (==0) h)) + zeros t
+
+
+zeros' m = foldr (\m1 acc -> length(filter (==0) m1) + acc ) 0 m
 
 -- (a) dimOK :: Mat a -> Bool que testa se uma matriz está bem construída (i.e., se todas as linhas têm a mesma dimensão).
 
@@ -282,7 +294,7 @@ addMat' m1 m2 = zipWMat (+) m1 m2
 --que testa se uma matriz quadrada é triangular superior (i.e., todos os elementos abaixo da diagonal são nulos).
 
 triSup :: Real a => Mat a -> Bool
-triSup = snd . foldl (\(ac1,ac2) line -> (ac1+1, all (== 0) (take ac1 line) && ac2)) (0,True)
+triSup p = snd (foldl (\(ac1,ac2) line -> (ac1+1, all (== 0) (take ac1 line) && ac2)) (0,True) p)
 
 -- (h) rotateLeft :: Mat a -> Mat a ,que roda uma matriz 90º para a esquerda.
 --Por exemplo, o resultado de rodar a matriz acima apresentada deve corresponder à matriz:
