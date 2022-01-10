@@ -127,7 +127,7 @@ data BTree a = Empty | Node a (BTree a) (BTree a)
 data LTree a = Tip a | Fork (LTree a) (LTree a)
 
 
--- (a) ltSum :: Num a => LTree a -> a ,que soma as folhas de uma árvore.
+-- (a) ltSum :: Num a => LTree a -> a,que soma as folhas de uma árvore.
 
 ltSum :: Num a => LTree a -> a
 ltSum (Tip a) = a

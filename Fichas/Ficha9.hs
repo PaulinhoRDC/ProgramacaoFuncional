@@ -27,18 +27,13 @@ bingo = do putStrLn "======= BINGO ======="
 
 tiraNum :: Int -> [Int] -> IO ()
 tiraNum 0 _ = putStrLn "FIM"                                    -- Para a lista vazia
-tiraNum n l = do putStrLn "Prima ENTER para tirar um número!"
+tiraNum n l = do putStr "Prima ENTER para tirar um número!"
+                 wait <- getChar
                  i <- randomRIO (0, n-1)
                  let (l1,x:l2) = splitAt i l
-                 getCh               -- para esperar que carreguem numa tecla, para retirar n
                  print x
                  tiraNum (n-1) (l1++l2)   -- (l1++l2) é a lista sem o elemento que foi retirado
 
-getCh :: IO Char
-getCh = do hSetEcho stdin False
-           c <- getChar
-           hSetEcho stdin True
-           return c
 
 {-
 (b) mastermind :: IO () que implementa uma variante do jogo de descodificação de padrões Mastermind.
@@ -201,7 +196,7 @@ geraChave = do num <- geraNums 5 []
 geraNums :: Int -> [Int] -> IO [Int]
 geraNums n l
     | n==0 = return l
-    | n>0  = do x <- randomRIO (1,9)
+    | n>0  = do x <- randomRIO (1,50)
                 if (elem x l)
                   then geraNums n l
                   else geraNums (n-1) (x:l)
