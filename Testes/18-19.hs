@@ -117,7 +117,7 @@ contaCons Nil = 0
 contaCons (Cons _ s) = 1 + contaCons s
 contaCons (App s1 s2) = contaCons s1 + contaCons s2
 
--- ----------------  <<1,7,5,3>>
+-- ----------------  App (Cons 1 Nil) (App (Cons 7 (Cons 5 Nil)) (Cons 3 Nil))   ->   <<1,7,5,3>>
 
 instance Show a => Show (Seq a) where
   show x = "<<" ++ mostra x ++ ">>"
@@ -147,14 +147,16 @@ Será valorizada a utilização de funções de ordem superior.
 
 type Mat a = [[a]]
 
+m1 :: Mat Int
+m1 = [[6,7,2], [1,5,9], [8,3,4]]
+
 -- --------a)
 
 getElem :: Mat a -> IO a
-getElem mat = do
-    let (linhas,colunas) = (length mat, length (head mat))
-    randLine <- randomRIO (0,linhas - 1)
-    randRow <- randomRIO (0,colunas - 1)
-    return ( (mat !! randLine) !! randRow )         -- return $ (mat !! randLine) !! randRow  
+getElem mat = do let (linhas,colunas) = (length mat, length (head mat))
+                 randLine <- randomRIO (0,linhas - 1)
+                 randRow <- randomRIO (0,colunas - 1)
+                 return ( (mat !! randLine) !! randRow )         -- return $ (mat !! randLine) !! randRow
 
 
 -- --------b)
@@ -162,7 +164,9 @@ getElem mat = do
 magic :: Mat Int -> Bool
 magic m = let somaLinhas = map sum m
               somaColunas = map sum (transpose m)
-          in length(nub [sum(diagonal1 m), sum(diagonal2 m)] ++ somaLinhas ++ somaColunas) == 1
+              somaDiagonal1 = sum (diagonal1 m)
+              somaDiagonal2 = sum (diagonal2 m)
+          in length(nub' ([somaDiagonal2, somaDiagonal1] ++ somaLinhas ++ somaColunas)) == 1
 
 diagonal1 :: Mat Int -> [Int]
 diagonal1 m = diaA 0 m
@@ -177,3 +181,13 @@ diagonal2 m = diaA ((length m)-1) m
           diaA i (h:t) = (h!!i): diaA (i-1) t
 
 -- diagonal2 m = diagonal1 (reverse m)
+
+nub' :: Eq a => [a] -> [a]    -- (mantém última ocorrência)
+nub' [] = []
+nub' (h:t) = if (elem h t)
+  then nub' t
+  else h: nub' t
+
+transpose :: Mat a -> Mat a
+transpose ([]:_) = []
+transpose m = (map head m) : transpose (map tail m)

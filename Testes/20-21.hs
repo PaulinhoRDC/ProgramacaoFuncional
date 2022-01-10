@@ -168,17 +168,23 @@ fichs (Dir n l) = (concat (map fichs l)) -- OU -- concat $ map fich l
 --dirFiles fs1 ["usr","xxx"] == Just ["abc.txt","readme"]
 
 dirFiles :: FileSystem -> [Nome] -> Maybe [Nome]
-dirFiles fs [] = Just (fichs fs)
+dirFiles fs [] = Just (fichs' fs)
 dirFiles (File _) (h:t) = Nothing
 dirFiles (Dir x l) (h:t) |(x==h) = dirFilesAux l t
                          |otherwise = Nothing
 
 dirFilesAux :: [FileSystem] -> [Nome] -> Maybe [Nome]
 dirFilesAux [] (_:_) = Nothing
-dirFilesAux lfs [] = Just (concat (map fichs lfs))
+dirFilesAux lfs [] = Just (concat (map fichs' lfs))
 dirFilesAux ((File _): fs) (n:ns) = dirFilesAux fs (n:ns)
 dirFilesAux ((Dir d l): fs) (n:ns) |(n==d)    = dirFilesAux l ns
                                    |otherwise = dirFilesAux fs (n:ns)
+
+fichs' :: FileSystem -> [Nome]
+fichs' (File n) = [n]
+fichs' _ = []
+
+
 -- ------------------c)
 
 listaFich :: FileSystem -> IO ()

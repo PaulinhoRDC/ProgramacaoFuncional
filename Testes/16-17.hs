@@ -56,7 +56,8 @@ data SReais = AA Double Double | FF Double Double
             | Uniao SReais SReais
 
 ex2 :: SReais
-ex2 = Uniao (Uniao (AA 4.2 5.5) (AF 3.1 7.0)) (FF (-12.3) 30.0)
+ex2 = Uniao (Uniao (AA 4.2 5.5) (AF 3.1 7.0)) (FF (-12.3) 30.0)    --   --> ((]4.2,5.5[ U ]3.1,7.0]) U [-12.3,30.0])
+
 
 -- ----a)
 

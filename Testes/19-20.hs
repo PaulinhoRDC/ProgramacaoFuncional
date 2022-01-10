@@ -59,13 +59,13 @@ elems ((x,x2):t) | (x<x2)    = x: elems ((x+1,x2):t)
 
 geraconj :: [Int] -> ConjInt
 geraconj [] = []
-geraconj l = enquantoCrescente l (head l) (last l)
+geraconj l = enquantoCrescente l (head l) (head l)
 
 enquantoCrescente :: [Int] -> Int -> Int  -> ConjInt
 enquantoCrescente [] x y       = []
-enquantoCrescente [n] x y      = [(n,n)]
+enquantoCrescente [n] x y      = [(x,y)]
 enquantoCrescente (n:n2:t) x y |(n==(n2-1)) = enquantoCrescente (n2:t) x n2
-                               |otherwise   = [(x,y)] ++ enquantoCrescente (n2:t) n2 (last t)
+                               |otherwise   = (x,y) : enquantoCrescente (n2:t) n2 n2
 
 -- OU
 
@@ -110,8 +110,11 @@ data Contacto = Casa Integer
 type Nome = String
 type Agenda = [(Nome, [Contacto])]
 
+
+agenda1 :: Agenda
 agenda1 = [("Sofia", [Casa 123456789, Tlm 987654321, Email "abc@def.ghi", Email "f@mendess.xyz"]),("Luís", [Tlm 69420]),("Rita", [Trab 58008])]
 
+contacto1 :: [Contacto]
 contacto1 = [Casa 123456789, Tlm 987654321, Email "abc@def.ghi", Email "f@mendess.xyz", Tlm 69420, Trab 58008]
 
 
