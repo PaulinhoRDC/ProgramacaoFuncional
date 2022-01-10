@@ -69,7 +69,9 @@ Defina as seguintes funções sobre estas árvores:
 -}
 
 data RTree a = R a [RTree a]
+    deriving Show
 
+arvore :: RTree Int
 arvore = R 6 [R 4 [R 7 [R 1 [],
                         R 3 []],
                    R 9 []],
