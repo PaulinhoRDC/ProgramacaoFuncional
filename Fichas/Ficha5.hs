@@ -219,6 +219,15 @@ de ordem superior).
 
 type Mat a = [[a]]
 
+m1 :: Mat Int
+m1 = [[1,2,3], [0,4,5], [0,0,6]]
+
+-- (extra) zeros :: Eq a => Num a => Mat a -> Int, que conta o número de zeros da matriz
+
+zeros :: Eq a => Num a => Mat a -> Int
+zeros [] = 0
+zeros (h:t) = (length(filter (==0) h)) + zeros t
+
 -- (a) dimOK :: Mat a -> Bool que testa se uma matriz está bem construída (i.e., se todas as linhas têm a mesma dimensão).
 
 dimOK :: Mat a -> Bool
