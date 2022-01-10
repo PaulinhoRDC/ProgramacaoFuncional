@@ -103,9 +103,7 @@ Por exemplo, replicate 3 10 corresponde a [10,10,10].
 
 replicate' :: Int -> a -> [a]
 replicate' 0 _ = []
-replicate' n x = if n<0
-  then []
-  else x: replicate' (n-1) x
+replicate' n x | n>0 = x: replicate' (n-1) x
 
 {-
 10. Apresente uma definição recursiva da função (pré-definida) intersperse :: a -> [a] -> [a]
