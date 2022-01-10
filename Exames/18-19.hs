@@ -35,6 +35,21 @@ maiorQue (Just a) (Just b) = a > b
 maiorQue _ Nothing = True
 maiorQue Nothing _ = False
 
+-- ------------
+
+maximumMB' :: (Ord a) => [Maybe a] -> Maybe a
+maximumMB' l = let
+  semJust = retiraJust l
+  maximoJust = maximum semJust
+  in if (null semJust)
+    then Nothing
+    else Just maximoJust
+
+retiraJust :: (Ord a) => [Maybe a] -> [a]
+retiraJust [] = []
+retiraJust (h:t) = case h of Just a -> a : retiraJust t
+                             Nothing -> retiraJust t
+
 {-
 3. Considere o seguinte tipo para representar árvores em que a informação está nas extermidades:
                                   data LTree a = Tip a | Fork (LTree a) (LTree a)
@@ -133,8 +148,10 @@ convPL ((x,y):t)= let (l,r)= filtra x t
 
 filtra :: (Eq a) => a -> RelP a -> ([a], RelP a)
 filtra _ [] = ([],[])
-filtra x ((a:b):t) = if (x==a) then (b:l,r)
+filtra x ((a,b):t) = if (x==a) then (b:l,r)
                                else (l,(a,b):r)
+
+          where (l,r) = filtra x t
 
 -- ------------b)
 
@@ -154,7 +171,17 @@ convFP (l,f) = convLP (map (\x -> (x,f x)) l)
 
 -- ------ii)
 
+{-
+
 convPF :: (Eq a) => RelP a -> RelF a
-convPF l = ((nub (map fst l)), f l)
+convPF l = ((nub' (map fst l)), f l)
     where f :: RelP a -> a -> [a]
           f l x = map snd (filter (\(y,_) -> y==x) l)
+
+nub' :: Eq a => [a] -> [a]    -- (mantém última ocorrência)
+nub' [] = []
+nub' (h:t) = if (elem h t)
+                then nub' t
+                else h: nub' t
+
+-}

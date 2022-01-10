@@ -41,13 +41,8 @@ ma2 = [[1,1,1], [1,1,1], [1,1,1]]
 
 zeros :: Eq a => Num a => Mat a -> Int
 zeros [] = 0
-zeros (h:t) = quantos (filter (==0) h) + zeros t
+zeros (h:t) = (length(filter (==0) h)) + zeros t
 
-quantos :: Eq a => Num a => [a] -> Int
-quantos [] = 0
-quantos (h:t) = if (h==0)
-  then 1 + quantos t
-  else quantos t
 
 -- -------b)
 

@@ -57,6 +57,12 @@ type Mat a = [[a]]
 ma :: Mat Int
 ma = [[1,2,3], [0,4,5], [0,0,6]]
 
+{-
+| 3 5 6 |
+| 2 4 0 |
+| 1 0 0 |
+-}
+
 
 rotateLeft :: Mat a -> Mat a
 rotateLeft [] = [[]]

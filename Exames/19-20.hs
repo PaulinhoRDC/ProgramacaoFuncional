@@ -80,22 +80,26 @@ valor (h:t) x = contaGrau (h:t) x 0
 
 contaGrau :: Polinomio -> Float -> Int -> Float
 contaGrau [] _ _ = 0
-contaGrau (h:t) x g = (h*(x^ fromIntegral(g)) + contaGrau t x (g+1) )
+contaGrau (h:t) x g = (h*(x^ fromIntegral (g))) + contaGrau t x (g+1)
 
 -- OUUUUUUU
 
 valor' :: Polinomio -> Float -> Float
 valor' p x = sum (zipWith (\a b -> b * x ^ a) [0..] p)
 
--- ---------------- b)
+-- ---------------- b)     [0,0,0,-5,0,2] , que é  2 x^5 − 5 x^3 , ficava , [0,0,-15,0,10]
 
 deriv :: Polinomio -> Polinomio
-deriv = tail . (zipWith (*) [0..])    -- deriv p = tail . (zipWith (*) [0..] p)
+deriv p = tail ( (zipWith (*) [0..] p) )
 
--- ---------------- c)
+-- ---------------- c)    [0,0,0,-5,0,2] [0,0,0,-5,0,2] -> [0,0,0,-10,0,4] , que é  4 x^5 − 10 x^3
 
 soma :: Polinomio -> Polinomio -> Polinomio
 soma p1 p2 = zipWith (+) p1 p2
+
+soma' :: Polinomio -> Polinomio -> Polinomio
+soma' [] [] = []
+soma' p1 p2 = (head p1 + head p2) : (soma' (tail p1) (tail p2))
 
 {-
 4. Considere a seguinte definição para representar matrizes: type Mat a = [[a]].
@@ -137,12 +141,12 @@ quebraLinhas (h:t) m = map (take h) m : quebraLinhas t (map (drop h) m)
 
 geraMat :: (Int,Int) -> (Int,Int) -> IO (Mat Int)
 geraMat (x,y) r |(x==0) = return []
-                |otherwise = do m <- geraMat (x-1,y) r
-                                l <- geraLinha y r
+                |otherwise = do l <- geraLinha y r
+                                m <- geraMat (x-1,y) r
                                 return ( l : m )
 
 geraLinha :: Int -> (Int, Int) -> IO [Int]
 geraLinha x r |(x==0) = return []
-              |otherwise = do t <- geraLinha (x-1) r
-                              n <- randomRIO r
+              |otherwise = do n <- randomRIO r
+                              t <- geraLinha (x-1) r
                               return (n : t)
