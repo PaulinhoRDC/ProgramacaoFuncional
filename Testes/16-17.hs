@@ -12,13 +12,16 @@ import Data.Maybe (fromMaybe)
 type MSet a = [(a,Int)]
 
 ex1 :: MSet Char
-ex1 = [('b',4),('a',4),('c',1)]
+ex1 = [('b',4),('a',2),('c',1)]
 
 -- ----a)
 
 cardMSet ::  MSet a -> Int
 cardMSet [] = 0
 cardMSet ((_,x):t) = x + cardMSet t
+
+cardMSet' ::  MSet a -> Int
+cardMSet' l = foldr (\(c,x) acc -> x + acc ) 0 l
 
 -- ----b)
 

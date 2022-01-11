@@ -157,7 +157,7 @@ filtra x ((a,b):t) = if (x==a) then (b:l,r)
 
 criaRelPint :: Int -> IO (RelP Int)
 criaRelPint 0 = return []
-criaRelPint n = do   putStr "Introduz dois numeros (separados por um espaco): "
+criaRelPint n = do   putStr "Introduz um par: "
                      par <- getLine
                      l <- criaRelPint (n-1)
                      return (read par : l)    -- Preciso usar um read "(2,3)" :: (Int,Int)

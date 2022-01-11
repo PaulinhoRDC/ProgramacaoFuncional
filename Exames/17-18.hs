@@ -30,6 +30,8 @@ any' f (h:t) = (f h) || any' f t
 
 any'' f l = foldl (\acc x -> if (f x) then True else acc) False l
 
+any''' f l = foldr (\x acc -> if (f x) then True else acc) False l
+
 ----- 4
 
 type Mat a = [[a]]
@@ -38,7 +40,10 @@ m1 :: Mat Int
 m1 =[[1,2,3], [0,4,5], [0,0,6]]
 
 triSup :: (Num a,Eq a) => Mat a -> Bool
-triSup = snd . foldl (\(ac1,ac2) line -> (ac1+1, all (== 0) (take ac1 line) && ac2)) (0,True)
+triSup m = snd ( foldl (\(ac1,ac2) line -> (ac1+1, all (== 0) (take ac1 line) && ac2)) (0,True) m )
+
+triSup' :: (Num a,Eq a) => Mat a -> Bool
+triSup' m = snd ( foldr (\line (ac1,ac2) -> (ac1+1, all (== 0) (take ac1 line) && ac2)) (0,True) m )
 
 ----- 5
 

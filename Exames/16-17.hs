@@ -91,6 +91,13 @@ posicoes tab = [(x,y) | x <- [0..n], y <- [0..n], retira (x,y) tab  == 'R']
 retira :: (Int,Int) -> Tabuleiro -> Char
 retira (x,y) tab = ((tab !! x) !! y)
 
+
+-- OU NESTA IDENTAÇÃO
+posicoes' :: Tabuleiro -> [(Int,Int)]
+posicoes' [] = []
+posicoes' tab = let n = (length tab) - 1
+                in [(x,y) | x <- [0..n], y <- [0..n], retira (x,y) tab  == 'R']
+
 -- ----b)
 
 -- ----c)

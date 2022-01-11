@@ -189,7 +189,7 @@ fichs' _ = []
 
 listaFich :: FileSystem -> IO ()
 listaFich fs = do
-    putStrLn "dá me uma diretoria"
+    putStrLn "dá me uma diretoria"        -- ”usr/xxx/PF”
     path <- getLine
     if dirFiles fs (partes' path '/') == Nothing
         then do putStr "Não é diretoria"
