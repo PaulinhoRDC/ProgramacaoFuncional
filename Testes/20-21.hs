@@ -59,6 +59,9 @@ calcula3 l = foldr auxfc ([] , 0) l
 auxfc :: (a,Int) -> ([a],Int) -> ([a],Int)
 auxfc (x,y) (lx,sy) = (x:lx, y+sy)
 
+calcula4  l = foldr (\(x,y) (outras,outros) ->  (x: outras , y + outros) ) ([] , 0) l
+
+
 
 {-
 3. Defina a funcção partes :: String -> Char -> [String], que parte uma string pelos pontos onde um dado caracter ocorre.
