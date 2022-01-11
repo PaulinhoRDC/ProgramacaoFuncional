@@ -94,21 +94,18 @@ conta (Juntar imgs) = sum (map conta imgs)
 -- ------b)
 
 apaga :: Imagem -> IO Imagem
-apaga i = do
-    let k = conta i
-    x <- randomRIO (1,k)
-    return (snd (apagaux x i))
+apaga im = do
+    let indquad = indices_quadrados im
+    randNum <- randomRIO (1,length indquad)
+    let indtoremove = indquad !! (randNum - 1)
+    return (apaga_indice indtoremove im)
 
-apagaux :: Int -> Imagem -> (Int,Imagem)
-apagaux 1 (Quadrado _ ) = (0,Juntar [])
-apagaux x (Quadrado v ) = (x-1, Quadrado v )
+indices_quadrados :: Imagem -> [Int]
+indices_quadrados (Quadrado n) = [n]
+indices_quadrados (Mover (_,_) im) = indices_quadrados im
+indices_quadrados (Juntar l) = concatMap indices_quadrados l
 
-apagaux x (Mover v i) = (n, Mover v rq)
-    where (n,rq) = apagaux x i
-
-apagaux x (Juntar l ) = ( c, Juntar im)
-    where (c,im) = apagaux2 x l
-          apagaux2 0 l      = (0,l)
-          apagaux2 n (x:xs) =(c2 , ima: imat )
-              where (c,ima) = apagaux n x
-                    (c2,imat) = apagaux2 c xs
+apaga_indice :: Int -> Imagem -> Imagem
+apaga_indice x (Quadrado n) = if x == n then Juntar [] else Quadrado n
+apaga_indice x (Mover (a,b) im) = Mover (a,b) (apaga_indice x im)
+apaga_indice x (Juntar l) = Juntar (map (apaga_indice x) l)

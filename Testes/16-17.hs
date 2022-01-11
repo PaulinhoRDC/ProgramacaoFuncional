@@ -95,18 +95,15 @@ data RTree a = R a [RTree a]
 
 -- ----a)
 
-percorre :: [Int] -> RTree a -> Maybe [a]
+
+f :: a -> Maybe [a] -> Maybe [a]
+f _ Nothing = Nothing
+f x (Just l) = Just (x : l)
+
+percorre :: [Int]-> RTree a -> Maybe [a]
 percorre [] (R a _) = Just [a]
 percorre _ (R a []) = Nothing
-percorre (h:t) (R a r) | length r < h || null auxX = Nothing
-                       | otherwise = Just (a:auxX)
-    where aux = percorre t (r !! (h - 1))
-          auxX = fromMaybe [] aux
-
-catM :: [Maybe [a]]-> [a]
-catM [] = []
-catM (Nothing:t) = catM t
-catM ((Just x):t) = x ++ catM t
+percorre (x:xs) (R a l) = if length l< x then Nothing else f a (percorre xs (l !! (x-1)))
 
 -- ----b)
 
