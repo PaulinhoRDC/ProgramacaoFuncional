@@ -54,7 +54,7 @@ Por exemplo, reverse [10,20,30] corresponde a [30,20,10].
 
 reverse' :: [a] -> [a]
 reverse' [] = []
-reverse' (h:t) = reverse t ++ [h]
+reverse' (h:t) = reverse' t ++ [h]
 
 {-
 6. Apresente uma definição recursiva da função (pré-definida) take :: Int -> [a] -> [a]
@@ -140,7 +140,7 @@ Por exemplo, concat [[1],[2,2],[3],[4,4,4],[5],[4]] corresponde a [1,2,2,3,4,4,4
 
 concat' :: [[a]] -> [a]
 concat' [] = []
-concat' (h:t) = h ++ concat t
+concat' (h:t) = h ++ concat' t
 
 {-
 13. Apresente uma definição recursiva da função (pré-definida) inits :: [a] -> [[a]]
@@ -173,6 +173,7 @@ heads' [] = []
 heads' ([]:t) = heads' t
 heads' (h:t) = head h : heads' t
 
+
 {-
 16. Defina a função total :: [[a]] -> Int
 que recebe uma lista de listas e conta o total de elementos (de todas as listas)
@@ -182,6 +183,10 @@ Por exemplo, total' [[2,3,4],[1,7],[],[8,5,3]] corresponde a 8.
 total' :: [[a]] -> Int
 total' [] = 0
 total' (h:t) = length h + total' t
+
+total'' :: [[a]] -> Int
+total'' [] = 0
+total'' m = sum (map length m)
 
 {-
 17. Defina a função fun :: [(a,b,c)] -> [(a,c)]
@@ -417,16 +422,6 @@ pMaior (h:t)
     | otherwise = 1 + x
     where x = pMaior t
 
--- OU   (Com acumulador, e muito maior facilidade de leitura)
-
-pMaior' :: Ord a => [a] -> Int                    -- [3,4,6,5] -> 2
-pMaior' [x] = 0
-pMaior' l = auxMaior l 0
-
-auxMaior :: Ord a => [a] -> Int -> Int
-auxMaior [x] pos = pos
-auxMaior (x:y:t) pos = if (x>=y) then auxMaior (x:t) pos                  -- [3,4,6,5] 0 -> [4,6,5] 1 -> [6,5] 2 -> [6] 2 -> 2
-                                 else auxMaior (y:t) pos+1
 
 {-
 35. Apresente uma definição recursiva da função (pré-definida) lookup :: Eq a => a -> [(a,b)] -> Maybe b

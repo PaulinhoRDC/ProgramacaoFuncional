@@ -80,6 +80,13 @@ mostra :: (Show a) => Int -> LTree a -> String
 mostra n (Tip a) = replicate n '.' ++ show a ++ "\n"
 mostra n (Fork a b) = mostra (n + 1) a ++ mostra (n + 1) b
 
+-- OU
+
+mostra' :: (Show a) => Int -> LTree a -> String
+mostra' 0 (Tip a) = show a ++ "\n"
+mostra' n (Tip a) = "." ++ mostra' (n-1) (Tip a)
+mostra' n (Fork a b) = mostra' (n + 1) a ++ mostra' (n + 1) b
+
 
 {-
 4. Utilizando uma função auxiliar com acumuladores,
