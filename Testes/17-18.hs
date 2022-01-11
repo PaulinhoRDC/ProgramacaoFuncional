@@ -56,13 +56,13 @@ amplitude l = maior - menor
 
 amplitude' :: [Int] -> Int
 amplitude' [] = 0                    --  min max l
-amplitude' l@(h:t) = m2 - m1
-    where (m1,m2) = ampaux h h l
+amplitude' l@(h:t) = maior - menor
+    where (menor,maior) = ampAux h h l
 
 -- devolve o min e o max da lista
-ampaux :: Int -> Int -> [Int] -> (Int, Int)
-ampaux m1 m2 [] = (m1, m2)
-ampaux m1 m2 (h:t) = ampaux (min m1 h ) (max m2 h) t
+ampAux :: Int -> Int -> [Int] -> (Int, Int)
+ampAux menor maior [] = (menor, maior)
+ampAux menor maior (h:t) = ampAux (min menor h) (max maior h) t
 
 -- ------b)
 
@@ -103,7 +103,7 @@ apaga im = do
 indices_quadrados :: Imagem -> [Int]
 indices_quadrados (Quadrado n) = [n]
 indices_quadrados (Mover (_,_) im) = indices_quadrados im
-indices_quadrados (Juntar l) = concatMap indices_quadrados l
+indices_quadrados (Juntar l) = concat (map indices_quadrados l)
 
 apaga_indice :: Int -> Imagem -> Imagem
 apaga_indice x (Quadrado n) = if x == n then Juntar [] else Quadrado n

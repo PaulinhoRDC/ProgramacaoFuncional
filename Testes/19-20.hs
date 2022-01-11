@@ -52,8 +52,8 @@ type Intervalo = (Int,Int)
 
 elems :: ConjInt -> [Int]
 elems [] = []
-elems ((x,x2):t) | (x<x2)    = x: elems ((x+1,x2):t)
-                 | otherwise = x: elems t
+elems ((x,x2):t) | (x<=x2)    = x: elems ((x+1,x2):t)
+                 | otherwise =  elems t
 
 -- --------------
 
@@ -161,6 +161,7 @@ consultaIO agenda = do nome <- getLine
                        let contactos = aux nome agenda
                        putStr (concat [show x ++ "\n" | x <- contactos])
 
+
               where aux _ [] = []
                     aux nome ((name,contactos):t) = if (name == nome) then contactos else aux nome t
 
@@ -180,12 +181,16 @@ tal que, unpaths (paths t) == t, para qualquer árvore t :: Eq a => RTree a.
 data RTree a = R a [RTree a]
       deriving (Show, Eq)
 
+
+
+caminhos :: RTree a -> [[a]]
+caminhos l = auxcaminhos [] l
+
+auxcaminhos acc (R a []) = [acc ++ [a]]
+auxcaminhos acc (R a l) = concat (map (auxcaminhos (acc ++ [a])) l)
+
+
 {-
-
-paths :: RTree a -> [[a]]
-paths (R a []) = [[a]]
-paths (R a outras) = [a: x | x <- concat [paths branch | branch <- outras]]
-
 -- ---------------
 
 unpaths :: Eq a => [[a]] -> RTree a

@@ -56,9 +56,8 @@ lookupAP x (Node (a,b) esq dir) |(x==a) = Just b
 -- ----------------
 
 zipWithBT :: (a -> b -> c) -> BTree a -> BTree b -> BTree c
-zipWithBT _ Empty _ = Empty
-zipWithBT _ _ Empty = Empty
 zipWithBT f (Node a esq dir) (Node a2 esq2 dir2) = Node (f a a2) (zipWithBT f esq esq2) (zipWithBT f dir dir2)
+zipWithBT f _ _ = Empty
 
 {-
 3. Defina a função digitAlpha :: String -> (String,String), que dada uma string,
@@ -100,7 +99,7 @@ data Seq a = Nil | Cons a (Seq a) | App (Seq a) (Seq a)
 firstSeq :: Seq a -> a
 firstSeq (Cons x s) = x
 firstSeq (App (Nil) s) = firstSeq s
-firstSeq (App s (Nil)) = firstSeq s
+firstSeq (App s _) = firstSeq s
 
 -- ----------------
 
@@ -166,7 +165,7 @@ magic m = let somaLinhas = map sum m
               somaColunas = map sum (transpose m)
               somaDiagonal1 = sum (diagonal1 m)
               somaDiagonal2 = sum (diagonal2 m)
-          in length(nub' ([somaDiagonal2, somaDiagonal1] ++ somaLinhas ++ somaColunas)) == 1
+          in length(nub' ([somaDiagonal2,somaDiagonal1] ++ somaLinhas ++ somaColunas)) == 1
 
 diagonal1 :: Mat Int -> [Int]
 diagonal1 m = diaA 0 m

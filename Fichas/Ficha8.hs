@@ -159,11 +159,18 @@ data Extracto = Ext Float [(Data, String, Movimento)]
 (a) Defina Data como instância da classe Ord.
 -}
 
+instance Eq Data where
+  (D dia1 mes1 ano1) == (D dia2 mes2 ano2) = (ano1==ano2) && (mes1==mes2) && (dia1==dia2)
+
 instance Ord Data where
-    compare (D dia1 mes1 ano1) (D dia2 mes2 ano2)
+  (D dia1 mes1 ano1) <= (D dia2 mes2 ano2) = ( (ano1 < ano2) || ((ano1==ano2) && (mes1 < mes2)) || ((ano1==ano2) && (mes1 == mes2) && (dia1<=dia2)) )
+
+{-
+  compare (D dia1 mes1 ano1) (D dia2 mes2 ano2)
         | ano1 > ano2 || ano1 == ano2 && (mes1 > mes2 || mes1 == mes2 && dia1 > dia2) = GT
         | ano1 == ano2 && mes1 == mes2 && dia1 == dia2 = EQ
         | otherwise = LT
+-}
 
 {-
 (b) Defina Data como instância da classe Show.
@@ -177,8 +184,10 @@ instance Show Data where
 que transforma um extracto de modo a que a lista de movimentos apareça ordenada por ordem crescente de data.
 -}
 
+{-
 ordena :: Extracto -> Extracto
 ordena (Ext n l) = Ext n (sort l)
+-}
 
 {-
 (d) Defina Extracto como instância da classe Show,
