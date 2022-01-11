@@ -78,6 +78,9 @@ digitAlpha (x:xs) | (isDigit x) = (x:num , letr)
 digitAlpha' :: String -> (String,String)
 digitAlpha' l = foldr (\x (ds,as) -> if isDigit x then (x:ds,as) else if isAlpha x then (ds,x:as) else (ds,as)) ([],[]) l
 
+digitAlpha'' :: String -> (String,String)
+digitAlpha'' l = foldr (\x acc -> if isDigit x then (x:(fst(acc)),(snd(acc))) else if isAlpha x then ((fst(acc)),x:(snd(acc))) else ((fst(acc)),(snd(acc)))) ([],[]) l
+
 {-
 4. Considere o seguinte tipo de dados para representar uma sequência em que os elementos podem ser acrecentados à esquerda (Cons)
 ou por concatenação de duas sequências (App).
