@@ -75,6 +75,13 @@ partes' s c = let (p,r) = span (/= c) s
                 [] -> [p]
                 x:xs -> p : partes' xs c
 
+partes :: String -> Char -> [String]
+partes [] _ = []
+partes (x:l) c
+    | x == c = partes l c
+partes l c = let (left, right) = span (/=c) l
+             in left : partes right c
+
 {-
 4. Considere o seguinte tipo para representar árvores binárias de procura.
 

@@ -31,7 +31,7 @@ intersect' l l2 = foldr (\x acc -> if x `elem` l2 then x:acc else acc) [] l
 
 tails :: [a] -> [[a]]
 tails [] = [[]]
-tails l = [l] ++ tails(tail l)
+tails l = [l] ++ tails (tail l)
 
 {-
 2. Para armazenar conjuntos de números inteiros, optou-se pelo uso de sequências de intervalos.
@@ -128,9 +128,9 @@ acrescEmail nome e agenda@((nomeX, contactos) : t)
 
 verEmails :: Nome -> Agenda -> Maybe [String]
 verEmails n [] = Nothing
-verEmails n ((x,l):xs) | (n==x) = if (null (daListaStr l))
+verEmails n ((x,l):xs) | (n==x) = if (null (daListaStr l))                      -- Pode vir sem nada
                                     then Nothing
-                                    else Just (daListaStr l)-- Pode vir sem nada
+                                    else Just (daListaStr l)
                        | otherwise = verEmails n xs
 
 daListaStr :: [Contacto] -> [String]
