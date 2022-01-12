@@ -128,7 +128,9 @@ acrescEmail nome e agenda@((nomeX, contactos) : t)
 
 verEmails :: Nome -> Agenda -> Maybe [String]
 verEmails n [] = Nothing
-verEmails n ((x,l):xs) | (n==x) = Just (daListaStr l)
+verEmails n ((x,l):xs) | (n==x) = if (null (daListaStr l))
+                                    then Nothing
+                                    else Just (daListaStr l)-- Pode vir sem nada
                        | otherwise = verEmails n xs
 
 daListaStr :: [Contacto] -> [String]

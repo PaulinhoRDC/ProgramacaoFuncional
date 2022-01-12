@@ -187,6 +187,8 @@ total' :: [[a]] -> Int
 total' [] = 0
 total' (h:t) = length h + total' t
 
+--OU
+
 total'' :: [[a]] -> Int
 total'' [] = 0
 total'' m = sum (map length m)
@@ -350,6 +352,15 @@ remPrimOcorr :: Eq a => [a] -> [a] -> [a]
 remPrimOcorr l [] = l
 remPrimOcorr [] _ = []
 remPrimOcorr l (x:xs) = remPrimOcorr (delete' x l) xs
+
+-- OU
+
+remPrimOcorr' :: Eq a => [a] -> [a] -> [a]
+remPrimOcorr' l [] = l
+remPrimOcorr' [] _ = []
+remPrimOcorr' l (x:xs) = if (elem x l )
+      then remPrimOcorr' (delete' x l) xs
+      else remPrimOcorr' l xs
 
 {-
 29. Apresente uma definição recursiva da função (pré-definida) union :: Eq a => [a] -> [a] -> [a]
@@ -556,6 +567,8 @@ partitionEithers' ((Left x):t) = (x:xs,ys)
       where (xs,ys) = partitionEithers' t
 partitionEithers' ((Right y):t) = (xs,y:ys)
       where (xs,ys) = partitionEithers' t
+
+-- OU
 
 partitionEithers'' :: [Either a b] -> ([a],[b])      -- data Either a b = Left a | Right b
 partitionEithers'' [] = ([],[])
