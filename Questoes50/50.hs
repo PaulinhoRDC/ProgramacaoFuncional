@@ -1,6 +1,9 @@
 module Questoes50 where
 
 import Data.Char
+import System.Random
+import System.IO
+import System.IO.Error
 
 {-
 1. Apresente uma definição recursiva da função (pré-definida) enumFromTo :: Int -> Int -> [Int]
@@ -553,6 +556,14 @@ partitionEithers' ((Left x):t) = (x:xs,ys)
       where (xs,ys) = partitionEithers' t
 partitionEithers' ((Right y):t) = (xs,y:ys)
       where (xs,ys) = partitionEithers' t
+
+partitionEithers'' :: [Either a b] -> ([a],[b])      -- data Either a b = Left a | Right b
+partitionEithers'' [] = ([],[])
+partitionEithers'' (h:t) = case h of Left x -> (x:a,b)
+                                     Right x -> (a,x:b)
+
+                    where (a,b) = partitionEithers'' t
+
 
 
 {-
